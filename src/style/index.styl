@@ -1,0 +1,226 @@
+body
+  font-family sans-serif
+  line-height 1.4em
+
+h1
+  margin 30px 0
+
+h2
+  margin 30px 0 20px 0
+
+
+ul
+  padding-left 20px
+
+section
+  margin 20px 0
+
+
+button
+input[type='submit']
+  appearance none
+  background #e5e5e5
+  border none
+  margin 5px 0
+  padding 7px 15px
+  transition background .3s ease
+
+button:hover
+input[type='submit']:hover
+  cursor pointer
+  background #d9d9d9
+
+  
+.notification
+  color blue
+  background lightgrey
+  font-size 20px
+  border-style solid
+  border-radius 5px
+  padding 10px
+  margin-bottom 10px
+
+.notification.error
+  color red
+
+.notification.success
+  color green
+
+
+.blog-list
+  display flex
+  flex-flow row wrap
+  justify-content start
+  align-items start
+  gap 14px
+  margin 30px 0
+  padding 0
+
+  .blog
+    // width @css{calc(50% - 7px)}
+    width 100%
+    display flex
+    flex-flow row nowrap
+    justify-content start
+    align-items stretch
+    gap 15px 0
+
+    .vote
+      width 50px
+      display flex
+      flex-flow column wrap
+      align-items center
+      padding 10px 0
+
+      button
+        appearance none
+        background-color transparent
+        border none
+
+      button:hover
+        cursor pointer
+
+    a.info
+      position relative
+      // width @css{calc(100% - 90px)}
+      width 100%
+      text-decoration none
+      color inherit
+      // background #e5e5e5
+      background #d9d9d9
+      padding 10px 20px
+      transition background .3s ease
+
+      > span
+        display block
+        padding 2px 0
+
+        > b
+          font-size 1.3em
+
+      button.remove-blog
+        background #000
+        color #fff
+
+      button.remove-blog:hover
+        background #4b4b4b
+
+      button.toggle-visibility
+        position absolute
+        top 10px
+        right 20px
+        margin 0
+
+    a.info:hover
+      // background #d9d9d9
+      background #c2c2c2
+
+
+form
+  display flex
+  flex-flow row wrap
+  justify-content start
+  align-items start
+  gap 10px
+
+  div
+    width 100%
+
+    label
+      display inline-block
+      width 84px
+
+
+
+.overview .teams
+  display flex
+  flex-flow row wrap
+  justify-content start
+  gap 30px
+
+  .team
+    width 250px
+    display flex
+    flex-flow row wrap
+    gap 20px
+
+    > *
+      width 100%
+
+    .match-info
+      display flex
+      flex-flow row wrap
+      gap 7px
+
+      > *
+        width 100%
+
+    .match-banner
+      display flex
+      flex-flow row nowrap
+      justify-content space-between
+      align-items center
+      background lightgray
+      padding 5px 10px
+
+      &.pending
+        opacity 0.5
+
+      &.now .result
+        font-weight bold
+        
+        // &:after
+        //   content ' LIVE'
+
+      .team-icon
+        display block
+        width 30px
+        height 30px
+        object-fit contain
+
+      .info
+        text-align center
+
+      .time
+        font-size 0.7em
+        line-height 1.8em
+
+    .players
+      display flex
+      flex-flow row nowrap
+      justify-content space-between
+      align-items center
+      gap 10px
+
+      .player
+        display flex
+        flex-flow row nowrap
+        gap 5px
+
+        .team-icon
+          display block
+          width 20px
+          height 20px
+          object-fit contain
+
+    // ul
+    //   list-style-type none
+    //   margin 10px 0 0 0
+    //   padding-left 0
+
+
+    // .points
+    //   display inline-block
+    //   width 35px
+
+
+
+
+.hide
+  display none !important
+
+
+// @media (max-width: 899px)
+//   .blog-list
+//     .blog
+//       width 100%
