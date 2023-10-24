@@ -1,1 +1,1 @@
-# kickbase-turbo
+https://kasemann.dev/kickbase-turbo/
