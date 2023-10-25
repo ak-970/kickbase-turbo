@@ -14,12 +14,12 @@ const getMatchDayData = async (matchDay) => {
     team1 : {
       id : m.team1.teamId,
       name : m.team1.teamName,
-      result : m.matchResults[1].pointsTeam1
+      result : m.matchResults[1] ? m.matchResults[1].pointsTeam1 : 0
     },
     team2 : {
       id : m.team2.teamId,
       name : m.team2.teamName,
-      result : m.matchResults[1].pointsTeam2
+      result : m.matchResults[1] ? m.matchResults[1].pointsTeam2 : 0
     }
   }))
 }

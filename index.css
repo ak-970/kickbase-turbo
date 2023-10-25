@@ -125,6 +125,7 @@ form div label {
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
+  align-items: start;
   gap: 30px;
 }
 .overview .teams .team {
