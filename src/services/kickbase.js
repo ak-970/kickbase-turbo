@@ -63,7 +63,9 @@ const getPlayersForMatchDay = async (user, matchDay) => {
   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/users/${user}/players?matchDay=${matchDay}`, config)
   return {
     user,
-    points : response.data.players.reduce((a, b) => a + ((response.data.currentDay >= response.data.day && b.totalPoints && response.data.players.filter(p => p.id !== '0').length > 0) ? b.totalPoints : 0), 0),
+    points : response.data.players
+      .filter(pl => pl.dayStatus === 1)
+      .reduce((a, b) => a + ((response.data.currentDay >= response.data.day && b.totalPoints && response.data.players.filter(p => p.id !== '0').length > 0) ? b.totalPoints : 0), 0),
     currentDay : response.data.currentDay,
     day : response.data.day,
     players : response.data.players.filter(p => p.id !== '0').map(pl => ({
@@ -74,7 +76,8 @@ const getPlayersForMatchDay = async (user, matchDay) => {
       number : pl.number,
       points : (pl.dayPoints || 0),
       position : pl.position,
-      image : pl.profileBig
+      image : pl.profileBig,
+      linedUp : pl.dayStatus === 1
     }))
   }
 }
