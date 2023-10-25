@@ -172,19 +172,22 @@ form div label {
   font-size: 0.7em;
   line-height: 1.8em;
 }
-.overview .teams .team .players {
+.overview .teams .team .player-item {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
-.overview .teams .team .players .player {
+.overview .teams .team .player-item.not-lined-up {
+  opacity: 0.4;
+}
+.overview .teams .team .player-item .player {
   display: flex;
   flex-flow: row nowrap;
   gap: 5px;
 }
-.overview .teams .team .players .player .team-icon {
+.overview .teams .team .player-item .player .team-icon {
   display: block;
   width: 20px;
   height: 20px;

@@ -5,8 +5,8 @@ import kickbaseService from '../services/kickbase'
 import openligadbService from '../services/openligadb'
 
 const Player = ({ player, clubIcon }) =>
-  <div className="players">
-    <div className="player">
+  <div className={`player-item ${player.linedUp ? 'lined-up' : 'not-lined-up'}`}>
+    <div className='player'>
       <img className="team-icon" src={clubIcon} />
       {player.firstName} {player.lastName}
     </div>

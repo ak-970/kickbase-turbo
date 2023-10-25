@@ -186,12 +186,15 @@ form
         font-size 0.7em
         line-height 1.8em
 
-    .players
+    .player-item
       display flex
       flex-flow row nowrap
       justify-content space-between
       align-items center
       gap 10px
+
+      &.not-lined-up
+        opacity 0.4
 
       .player
         display flex
