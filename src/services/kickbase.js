@@ -92,9 +92,31 @@ const getLineup = async (leagueId) => {
   const config = {
     headers: { Authorization: token }
   }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineup `, config)
-  // return response.data
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineup`, config)
   return response.data.players.filter(p => p !== null)
+}
+
+
+const getLineupExtended = async (leagueId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineupex`, config)
+  // return response.data
+  return response.data.players.map(pl => ({
+    id : pl.id,
+    club : pl.teamId,
+    firstName : pl.firstName,
+    lastName : pl.lastName,
+    number : pl.number,
+    position : pl.position,
+    image : pl.profileBig,
+    linedUp : pl.dayStatus === 1,
+    totalPoints : pl.totalPoints,
+    averagePoints : pl.averagePoints,
+    marketValue : pl.marketValue,
+    marketValueTrend : pl.marketValueTrend
+  }))
 }
 
 
@@ -106,5 +128,6 @@ export default {
   getCurrentMatchDay,
   getLive,
   getPlayersForMatchDay,
-  getLineup
+  getLineup,
+  getLineupExtended
 }

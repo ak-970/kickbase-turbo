@@ -193,6 +193,20 @@ form div label {
   height: 20px;
   object-fit: contain;
 }
+.squad-list .player-position {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+  align-items: start;
+  gap: 15px;
+}
+.squad-list .player-position h3 {
+  margin-bottom: 0;
+}
+.squad-list .player-position h3,
+.squad-list .player-position .player-item {
+  width: 100%;
+}
 .hide {
   display: none !important;
 }
