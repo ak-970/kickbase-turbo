@@ -91,7 +91,12 @@ const App = () => {
         clubs={clubs}
       />
     case 'squad':
-      return <Squad />
+      return <Squad
+        user={user}
+        league={league}
+        users={users}
+        clubs={clubs}
+      />
     case 'transfers':
       return <h2>Transfers...</h2>
     default:
