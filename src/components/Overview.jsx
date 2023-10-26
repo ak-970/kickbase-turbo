@@ -35,10 +35,9 @@ const MatchBanner = ({ match, clubs }) => {
 }
 
 
-const Overview = ({ user, users, clubs }) => {
+const Overview = ({ user, league, users, clubs }) => {
 
   // use states
-  // const [league, setLeague] = useState(user.leagues[0])
   // const [currentMatch, setCurrentMatch] = useState(false)
   // const [live, setLive] = useState(null)
   const [matchDay, setMatchDay] = useState(6)
@@ -75,14 +74,14 @@ const Overview = ({ user, users, clubs }) => {
 
   useEffect(() => {
     if (user !== null && users) {
-      Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(u.id, matchDay)))
+      Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(u.id, league, matchDay)))
         .then((players) => {
           setPlayersForMatchDay(players)
           // console.log('playersForMatchDay', players)
           // setUpdateOverview(!updateOverview)
         })
     }
-  }, [user, users, matchDay])
+  }, [user, users, league, matchDay])
 
 
   const playsInThisMatch = (player, match) => {
@@ -105,10 +104,6 @@ const Overview = ({ user, users, clubs }) => {
         <label htmlFor='matchDay'>Spieltag: </label>
         <input id='matchDay' type='number' min={1} max={22} value={matchDay} onChange={() => setMatchDay(event.target.value)}/>
       </div>
-      {/* <div className='buttons'>
-        <h3>Liga</h3>
-        {user.leagues.map(l => <button key={l.id} onClick={() => setLeague(l.id)}>{l.name}</button>)}
-      </div> */}
       <div className="teams">
         {users && users.map(u =>
           <div key={u.id} className="team">
@@ -116,7 +111,11 @@ const Overview = ({ user, users, clubs }) => {
               <h3>{u.name}</h3>
               <p>
                 Gesamt: {u.points}<br/>
-                Spieltag: {playersForMatchDay.find(p => p.user === u.id).points}
+                Spieltag: {
+                  playersForMatchDay.find(p => p.user === u.id)
+                    ? playersForMatchDay.find(p => p.user === u.id).points
+                    : 0
+                }
               </p>
             </div>
 
