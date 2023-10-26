@@ -20,6 +20,7 @@ const App = () => {
 
   // use states
   const [user, setUser] = useState(null)
+  const [league, setLeague] = useState(0)
   const [users, setUsers] = useState(null)
   const [tab, setTab] = useState('overview')
   const [notification, setNotification] = useState({ message : null, type : '' })
@@ -34,18 +35,19 @@ const App = () => {
       kickbaseService.setToken(user.token)
       // kickbaseService.setTokenExp(user.tokenExp)
       console.log('user', user)
+
+      setLeague(user.leagues[0].id)
     }
   }, [])
 
   useEffect(() => {
     user !== null && kickbaseService
-      .getUsers()
+      .getUsers(league)
       .then(u => {
         setUsers(u)
         console.log('users', u)
       })
-  }, [user])
-
+  }, [user, league])
 
 
   // method functions
@@ -66,6 +68,8 @@ const App = () => {
       setUser(user)
       console.log('user', user)
 
+      setLeague(user.leagues[0].id)
+
     } catch (exception) {
       notify('Wrong credentials', 'error')
     }
@@ -82,6 +86,7 @@ const App = () => {
     case 'overview':
       return <Overview
         user={user}
+        league={league}
         users={users}
         clubs={clubs}
       />
@@ -106,7 +111,16 @@ const App = () => {
         : <>
 
           <section>
-            <p>Logged in as {user.name} <button onClick={logout}>Logout</button></p>
+            <p>
+              Logged in as {user.name}&nbsp;
+              <button onClick={logout}>Logout</button>&nbsp;
+            </p>
+            <div>
+              <label htmlFor='leagueId'>Liga: </label>
+              <select id='leagueId' value={league} onChange={() => setLeague(event.target.value)}>
+                {user.leagues.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+              </select>
+            </div>
           </section>
 
           <section>

@@ -2,15 +2,13 @@ import axios from 'axios'
 
 const baseUrl = 'https://api.kickbase.com'
 
-const leagueId = 4077604
-
 let token = null
-// const tokenCookie = () => `kkstrauth=${token};`
 const setToken = newToken => {
   token = `bearer ${newToken}`
 }
 
-const getOverview = async () => {
+
+const getOverview = async (leagueId) => {
   const config = {
     headers: { Authorization: token }
   }
@@ -19,24 +17,21 @@ const getOverview = async () => {
 }
 
 
-const getUsers = async () => {
+const getUsers = async (leagueId) => {
+  if (leagueId === 0) return []
   const config = {
     headers: { Authorization: token }
   }
   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/users/`, config)
-  let users = []
-  response.data.users.forEach(u => {
-    users.push({
-      id : u.id,
-      name : u.name,
-      image : u.profile,
-      points : u.pt
-    })
-  })
-  return users
+  return response.data.users.map(u => ({
+    id : u.id,
+    name : u.name,
+    image : u.profile,
+    points : u.pt || 0
+  }))
 }
 
-const getLive = async () => {
+const getLive = async (leagueId) => {
   const config = {
     headers: { Authorization: token }
   }
@@ -56,7 +51,7 @@ const getLive = async () => {
   }))
 }
 
-const getPlayersForMatchDay = async (user, matchDay) => {
+const getPlayersForMatchDay = async (user, leagueId, matchDay) => {
   const config = {
     headers: { Authorization: token }
   }
