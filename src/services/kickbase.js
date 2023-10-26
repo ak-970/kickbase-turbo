@@ -8,13 +8,13 @@ const setToken = newToken => {
 }
 
 
-const getOverview = async (leagueId) => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
-  return response.data
-}
+// const getOverview = async (leagueId) => {
+//   const config = {
+//     headers: { Authorization: token }
+//   }
+//   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
+//   return response.data
+// }
 
 
 const getUsers = async (leagueId) => {
@@ -30,6 +30,16 @@ const getUsers = async (leagueId) => {
     points : u.pt || 0
   }))
 }
+
+
+const getCurrentMatchDay = async (leagueId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
+  return response.data.md[0].n
+}
+
 
 const getLive = async (leagueId) => {
   const config = {
@@ -61,7 +71,7 @@ const getPlayersForMatchDay = async (user, leagueId, matchDay) => {
     points : response.data.players
       .filter(pl => pl.dayStatus === 1)
       .reduce((a, b) => a + ((response.data.currentDay >= response.data.day && b.totalPoints && response.data.players.filter(p => p.id !== '0').length > 0) ? b.totalPoints : 0), 0),
-    currentDay : response.data.currentDay,
+    // currentDay : response.data.currentDay,
     day : response.data.day,
     players : response.data.players.filter(p => p.id !== '0').map(pl => ({
       id : pl.id,
@@ -78,11 +88,23 @@ const getPlayersForMatchDay = async (user, leagueId, matchDay) => {
 }
 
 
+const getLineup = async (leagueId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineup `, config)
+  // return response.data
+  return response.data.players.filter(p => p !== null)
+}
+
+
 
 export default {
   setToken,
-  getOverview,
+  // getOverview,
   getUsers,
+  getCurrentMatchDay,
   getLive,
-  getPlayersForMatchDay
+  getPlayersForMatchDay,
+  getLineup
 }

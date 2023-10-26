@@ -40,7 +40,8 @@ const Overview = ({ user, league, users, clubs }) => {
   // use states
   // const [currentMatch, setCurrentMatch] = useState(false)
   // const [live, setLive] = useState(null)
-  const [matchDay, setMatchDay] = useState(6)
+  const [currentMatchDay, setCurrentMatchDay] = useState(0)
+  const [matchDay, setMatchDay] = useState(0)
   const [playersForMatchDay, setPlayersForMatchDay] = useState([])
   // const [updateOverview, setUpdateOverview] = useState(true)
   const [currentMatchdayData, setCurrentMatchdayData] = useState(null)
@@ -54,14 +55,14 @@ const Overview = ({ user, league, users, clubs }) => {
   //     })
   // }, [user])
 
-  // useEffect(() => {
-  //   openligadbService
-  //     .getCurrentMatchDay()
-  //     .then(day => {
-  //       setMatchDay(day)
-  //       console.log('day', day)
-  //     })
-  // }, [])
+  useEffect(() => {
+    kickbaseService
+      .getCurrentMatchDay(league)
+      .then(day => {
+        setCurrentMatchDay(day)
+        setMatchDay(day)
+      })
+  }, [])
 
   useEffect(() => {
     openligadbService
@@ -76,22 +77,27 @@ const Overview = ({ user, league, users, clubs }) => {
     if (user !== null && users) {
       Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(u.id, league, matchDay)))
         .then((players) => {
-          setPlayersForMatchDay(players)
-          // console.log('playersForMatchDay', players)
-          // setUpdateOverview(!updateOverview)
+          if(matchDay !== 0 && matchDay === currentMatchDay) {
+            kickbaseService.getLineup(league)
+              .then((lineup) => {
+                setPlayersForMatchDay(players.map(pl => ({
+                  ...pl,
+                  players : pl.players.map(p => ({
+                    ...p,
+                    linedUp : lineup.includes(p.id)
+                  }))
+                })))
+              })
+          } else {
+            setPlayersForMatchDay(players)
+          }
         })
     }
   }, [user, users, league, matchDay])
 
 
-  const playsInThisMatch = (player, match) => {
-    // console.log('player', player)
-    // console.log('match', match)
-    // console.log('clubs.find(c => c.id === player.club)', clubs.find(c => c.id === player.club))
-
-    return [match.team1.id, match.team2.id].includes(clubs.find(c => c.id === player.club).openligaId)
-    // return false
-  }
+  const playsInThisMatch = (player, match) =>
+    [match.team1.id, match.team2.id].includes(clubs.find(c => c.id === player.club).openligaId)
 
 
 
@@ -100,12 +106,16 @@ const Overview = ({ user, league, users, clubs }) => {
     <section className='overview'>
       {/* <h2>Overview <button onClick={() => setUpdateOverview(!updateOverview)}>update</button></h2> */}
       <h2>Overview</h2>
+
       <div>
         <label htmlFor='matchDay'>Spieltag: </label>
-        <input id='matchDay' type='number' min={1} max={22} value={matchDay} onChange={() => setMatchDay(event.target.value)}/>
+        <input id='matchDay' type='number' min={1} max={22} value={matchDay} onChange={() => setMatchDay(parseInt(event.target.value))}/>
       </div>
+
       <div className="teams">
+
         {users && users.map(u =>
+
           <div key={u.id} className="team">
             <div>
               <h3>{u.name}</h3>
@@ -135,8 +145,11 @@ const Overview = ({ user, league, users, clubs }) => {
                 )}
               </div>
             )}
+
           </div>
+
         )}
+
       </div>
     </section>
   )
