@@ -75,16 +75,17 @@ const Overview = ({ user, league, users, clubs }) => {
 
   useEffect(() => {
     if (user !== null && users) {
-      Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(u.id, league, matchDay)))
+      Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(league, u.id, matchDay)))
         .then((players) => {
           if(matchDay !== 0 && matchDay === currentMatchDay) {
-            kickbaseService.getLineup(league)
-              .then((lineup) => {
+            Promise.all(users.map(u => kickbaseService.getUserPlayers(league, u.id, matchDay)))
+              .then(pl => {
+                const linedUpPlayers = pl.reduce((a, b) => [...a, ...b], []).filter(p => p.linedUp).map(p => p.id)
                 setPlayersForMatchDay(players.map(pl => ({
                   ...pl,
                   players : pl.players.map(p => ({
                     ...p,
-                    linedUp : lineup.includes(p.id)
+                    linedUp : linedUpPlayers.includes(p.id)
                   }))
                 })))
               })
@@ -120,8 +121,8 @@ const Overview = ({ user, league, users, clubs }) => {
             <div>
               <h3>{u.name}</h3>
               <p>
-                Gesamt: {u.points}<br/>
-                Spieltag: {
+                Gesamtpunkte: {u.points}<br/>
+                Spieltagspunkte: {
                   playersForMatchDay.find(p => p.user === u.id)
                     ? playersForMatchDay.find(p => p.user === u.id).points
                     : 0
