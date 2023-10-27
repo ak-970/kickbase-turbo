@@ -61,7 +61,7 @@ const getLive = async (leagueId) => {
   }))
 }
 
-const getPlayersForMatchDay = async (user, leagueId, matchDay) => {
+const getPlayersForMatchDay = async (leagueId, user, matchDay) => {
   const config = {
     headers: { Authorization: token }
   }
@@ -120,6 +120,28 @@ const getLineupExtended = async (leagueId) => {
 }
 
 
+const getUserPlayers = async (leagueId, user) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/users/${user}/players`, config)
+  return response.data.players.map(pl => ({
+    id : pl.id,
+    club : pl.teamId,
+    firstName : pl.firstName,
+    lastName : pl.lastName,
+    number : pl.number,
+    position : pl.position,
+    image : pl.profileBig,
+    linedUp : pl.dayStatus === 1,
+    totalPoints : pl.totalPoints,
+    averagePoints : pl.averagePoints,
+    marketValue : pl.marketValue,
+    marketValueTrend : pl.marketValueTrend
+  }))
+}
+
+
 
 export default {
   setToken,
@@ -129,5 +151,6 @@ export default {
   getLive,
   getPlayersForMatchDay,
   getLineup,
-  getLineupExtended
+  getLineupExtended,
+  getUserPlayers
 }
