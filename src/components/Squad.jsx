@@ -12,35 +12,6 @@ import Chart from 'chart.js/auto'
 import { getRelativePosition } from 'chart.js/helpers'
 
 
-// const ChartCanvas = ({ ctx }) => {
-//   const chart = new Chart(ctx, {
-//     type: 'line',
-//     data: data,
-//     options: {
-//       onClick: (e) => {
-//         const canvasPosition = getRelativePosition(e, chart)
-
-//         // Substitute the appropriate scale IDs
-//         const dataX = chart.scales.x.getValueForPixel(canvasPosition.x)
-//         const dataY = chart.scales.y.getValueForPixel(canvasPosition.y)
-//       }
-//     }
-//   })
-// }
-
-// const Canvas = props => {
-//   const canvasRef = useRef(null)
-
-//   useEffect(() => {
-//     const canvas = canvasRef.current
-//     const context = canvas.getContext('2d')
-//     //Our first draw
-//     context.fillStyle = '#000000'
-//     context.fillRect(0, 0, context.canvas.width, context.canvas.height)
-//   }, [])
-
-//   return <canvas ref={canvasRef} {...props}/>
-// }
 
 const ChartCanvas = ({ data }) => {
   const canvasRef = useRef(null)
@@ -48,98 +19,108 @@ const ChartCanvas = ({ data }) => {
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-
     const chart = new Chart(ctx, {
-      type: 'line',
-      data: data,
-      options: {
-        // onClick: (e) => {
-        //   const canvasPosition = getRelativePosition(e, chart)
-
-        //   // Substitute the appropriate scale IDs
-        //   const dataX = chart.scales.x.getValueForPixel(canvasPosition.x)
-        //   const dataY = chart.scales.y.getValueForPixel(canvasPosition.y)
-        // }
+      data,
+      options : {
+        scales : {
+          x : {
+            beginAtZero: true
+          },
+          y : {
+            beginAtZero: true
+          }
+        }
       }
     })
-
   }, [])
 
   return <canvas ref={canvasRef}/>
 }
 
 
-const Player = ({ player, matchDays }) => {
+
+const Player = ({ player }) => {
 
   // use states
-  const [statDays, setStatDays] = useState(100)
+  const [statDays, setStatDays] = useState(70)
 
-  const pointHistoryExtended = (mh, ph) => mh.map(h =>
-    ph.find(ph => formatDate(ph.matchDateTime) === formatDate(h.day))
-      ? ph.find(ph => formatDate(ph.matchDateTime) === formatDate(h.day)).points
-      : 0
-  )
-
-  const pointHistoryExtendedAverage = (mh, ph) => {
-    console.log('pointHistoryExtendedAverage...')
-    const phe = ph.filter(h => h.season.id === 24).reduce((a, b) => (a.concat({
+  const pointHistoryExtended = () => {
+    let history = player.pointHistory.filter(h => h.matchDateTime !== '2022').reduce((a, b) => (a.concat({
       ...b,
-      pointsTotal : (b.points + a.reduce((a2, b2) => (a2 + b2.points), 0)),
-      pointsAverage : (b.points + a.reduce((a2, b2) => (a2 + b2.points), 0)) / b.day
+      pointsTotal : a.reduce((a2, b2) => (a2 + b2.points), 0) + b.points,
+      pointsAverage : (a.reduce((a2, b2) => (a2 + b2.points), 0) + b.points) / b.day
     })), [])
-    // console.log(phe)
-    return mh.map(h =>
-      phe.find(phe => formatDate(phe.matchDateTime) === formatDate(h.day))
-        ? phe.find(phe => formatDate(phe.matchDateTime) === formatDate(h.day)).pointsAverage
-        : null
-    )
+    history.unshift({
+      day : 0,
+      matchDateTime : player.marketValueHistory.slice(-statDays)[0].day,
+      points : 0,
+      pointsTotal : 0,
+      pointsAverage : 0
+    })
+    history.push({
+      day : 0,
+      matchDateTime : player.marketValueHistory.slice(-1)[0].day,
+      points : 0,
+      pointsTotal : history.slice(-1)[0].pointsTotal,
+      pointsAverage : history.slice(-1)[0].pointsAverage
+    })
+    return history
   }
 
-  // console.log('player', player)
-  // console.log('marketValueHistory', player.marketValueHistory.slice(-statDays).map(h => h.m))
+
+
   const chartData = {
-    labels: player.marketValueHistory.slice(-statDays).map(h => formatDate(h.day, 'D.M.YY')),
     datasets: [
       {
         type: 'line',
-        label: 'Marktwert',
-        data: player.marketValueHistory.slice(-statDays).map(h => h.marketValue / 100000)
+        label: 'Marktwert/100k',
+        tension: 0.2,
+        pointRadius : 0,
+        // yAxisID : 'marketValue',
+        data: player.marketValueHistory.slice(-statDays).map(h => ({
+          x : formatDate(h.day, 'D.M.YY'),
+          y : h.marketValue / 100000
+        }))
       },
-      {
-        type: 'line',
-        label: 'Durchschnittspunkte',
-        data: pointHistoryExtendedAverage(player.marketValueHistory.slice(-statDays), player.pointHistory)
-      },
-      // {
-      //   type: 'bar',
-      //   label: 'Spieltage',
-      //   // data: player.pointHistory.map(h => h.points)
-      //   data: player.marketValueHistory.slice(-statDays).map(h => -1),
-      //   options : { barThickness : 1 }
-      // },
       {
         type: 'bar',
         label: 'Punkte',
-        // data: player.pointHistory.map(h => h.points)
-        // data: player.marketValueHistory.slice(-statDays).map(h => Math.random() * 150)
-        data: pointHistoryExtended(player.marketValueHistory.slice(-statDays), player.pointHistory)
+        // yAxisID : 'points',
+        data: pointHistoryExtended().map(h => ({
+          x : formatDate(h.matchDateTime, 'D.M.YY'),
+          y : h.points
+        }))
       },
-    //   {
-    //     type: 'line',
-    //     label: 'Test',
-    //     data : [null, null, 0, 120, null, 250, 46],
-    //     labels : [null, null, '3.8.23', '23.8.23', null, '10.9.23', '24.10.23']
-    //   }
+      {
+        type: 'line',
+        label: 'Punkte Ø',
+        tension: 0.3,
+        // fill: 'origin',
+        // yAxisID : 'points',
+        data: pointHistoryExtended().map(h => ({
+          x : formatDate(h.matchDateTime, 'D.M.YY'),
+          y : h.pointsAverage
+        }))
+      },
+      {
+        type: 'line',
+        label: 'zero',
+        // borderColor: '#000',
+        pointRadius : 0,
+        data: [
+          {
+            x : formatDate(player.marketValueHistory.slice(-statDays)[0].day, 'D.M.YY'),
+            y : 0
+          },
+          {
+            x : formatDate(player.marketValueHistory.slice(-1)[0].day, 'D.M.YY'),
+            y : 0
+          }
+        ]
+      }
     ]
   }
-  // console.log('find points...', player.lastName,
-  //   player.marketValueHistory.slice(-statDays).map(h => ({
-  //     phistory : player.pointHistory.map(ph => formatDate(ph.matchDateTime)),
-  //     current : formatDate(h.day),
-  //     found : player.pointHistory.find(ph => formatDate(ph.matchDateTime) === formatDate(h.day)),
-  //     // points : this.found ? this.found.points : 0
-  //   }))
-  // )
+
   return (
     <div className='player-item' key={player.id}>
       <div>{player.firstName} {player.lastName}</div>
@@ -150,6 +131,8 @@ const Player = ({ player, matchDays }) => {
   )
 }
 
+
+
 const Squad = ({ user, league, users, clubs }) => {
 
   // use states
@@ -158,12 +141,8 @@ const Squad = ({ user, league, users, clubs }) => {
   const [midfield, setMidfield] = useState([])
   const [attack, setAttack] = useState([])
 
-
-
   useEffect(() => {
     kickbaseService
-      // .getLineupExtended(league)
-      // .getUserPlayers(league, user.id)
       .getUserPlayersExtended(league, user.id)
       .then(lineup => {
         console.log('userPlayersExtended', lineup)
