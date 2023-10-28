@@ -19,19 +19,7 @@ const ChartCanvas = ({ data }) => {
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    const chart = new Chart(ctx, {
-      data,
-      options : {
-        scales : {
-          x : {
-            beginAtZero: true
-          },
-          y : {
-            beginAtZero: true
-          }
-        }
-      }
-    })
+    const chart = new Chart(ctx, { data })
   }, [])
 
   return <canvas ref={canvasRef}/>
@@ -95,6 +83,7 @@ const Player = ({ player }) => {
         type: 'line',
         label: 'Punkte Ø',
         tension: 0.3,
+        pointRadius : 0,
         // fill: 'origin',
         // yAxisID : 'points',
         data: pointHistoryExtended().map(h => ({
@@ -105,6 +94,7 @@ const Player = ({ player }) => {
       {
         type: 'line',
         label: 'zero',
+        // hiddenLegend: true,
         // borderColor: '#000',
         pointRadius : 0,
         data: [
@@ -123,10 +113,13 @@ const Player = ({ player }) => {
 
   return (
     <div className='player-item' key={player.id}>
-      <div>{player.firstName} {player.lastName}</div>
+      {/* <p><b>{player.firstName} {player.lastName}</b> | P {player.totalPoints}, Ø {player.averagePoints} | € {player.marketValue} {player.marketValueTrend === 1 ? '↑' : '↓'}</p> */}
+      <div><b>{player.firstName} {player.lastName}</b></div>
       <div>P {player.totalPoints}, Ø {player.averagePoints}</div>
       <div>€ {player.marketValue} {player.marketValueTrend === 1 ? '↑' : '↓'}</div>
-      <ChartCanvas data={chartData}/>
+      <div className='chart-container'>
+        <ChartCanvas data={chartData}/>
+      </div>
     </div>
   )
 }
