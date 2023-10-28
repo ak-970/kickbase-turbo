@@ -207,6 +207,10 @@ form div label {
 .squad-list .player-position .player-item {
   width: 100%;
 }
+.squad-list .player-position .chart-container {
+  width: 700px;
+  max-width: 100%;
+}
 .hide {
   display: none !important;
 }
