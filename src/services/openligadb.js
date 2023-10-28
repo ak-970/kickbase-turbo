@@ -1,9 +1,25 @@
 import axios from 'axios'
+// import formatDate from '../utils/formatDate'
 
 // const getCurrentMatchDay = async () => {
 //   const response = await axios.get('https://api.openligadb.de/getcurrentgroup/bl1f')
 //   return response.data.groupOrderID
 // }
+
+const getMatchDays = async () => {
+  const matchDays = [...Array(23).keys()].slice(1)
+  const response = await axios.get('https://api.openligadb.de/getmatchdata/bl1f/2023')
+  // return response.data.reduce((a, b) => (a.includes(b.matchDateTime) ? a : a.concat(b.matchDateTime)), [])
+  return matchDays.map(md => ({
+    day : md,
+    // matches : response.data.reduce((a, b) => ((a.includes(b.matchDateTime) || md !== b.group.groupOrderID) ? a : a.concat(b.matchDateTime)), [])
+    matches : response.data.filter(m => m.group.groupOrderID === md).map(m => ({
+      matchDateTime : m.matchDateTime,
+      team1 : m.team1.teamId,
+      team2 : m.team2.teamId
+    }))
+  }))
+}
 
 const getMatchDayData = async (matchDay) => {
   const response = await axios.get(`https://api.openligadb.de/getmatchdata/bl1f/2023/${matchDay}`)
@@ -31,6 +47,7 @@ const getMatchDayData = async (matchDay) => {
 
 export default {
   // getCurrentMatchDay,
+  getMatchDays,
   getMatchDayData,
   // getCurrentMatchDayData
 }

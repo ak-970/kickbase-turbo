@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { clubs, getMatchingId } from '../data/clubs'
+import openligadbService from './openligadb'
 
 const baseUrl = 'https://api.kickbase.com'
 
@@ -88,36 +90,36 @@ const getPlayersForMatchDay = async (leagueId, user, matchDay) => {
 }
 
 
-const getLineup = async (leagueId) => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineup`, config)
-  return response.data.players.filter(p => p !== null)
-}
+// const getLineup = async (leagueId) => {
+//   const config = {
+//     headers: { Authorization: token }
+//   }
+//   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineup`, config)
+//   return response.data.players.filter(p => p !== null)
+// }
 
 
-const getLineupExtended = async (leagueId) => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineupex`, config)
-  // return response.data
-  return response.data.players.map(pl => ({
-    id : pl.id,
-    club : pl.teamId,
-    firstName : pl.firstName,
-    lastName : pl.lastName,
-    number : pl.number,
-    position : pl.position,
-    image : pl.profileBig,
-    linedUp : pl.dayStatus === 1,
-    totalPoints : pl.totalPoints,
-    averagePoints : pl.averagePoints,
-    marketValue : pl.marketValue,
-    marketValueTrend : pl.marketValueTrend
-  }))
-}
+// const getLineupExtended = async (leagueId) => {
+//   const config = {
+//     headers: { Authorization: token }
+//   }
+//   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/lineupex`, config)
+//   // return response.data
+//   return response.data.players.map(pl => ({
+//     id : pl.id,
+//     club : pl.teamId,
+//     firstName : pl.firstName,
+//     lastName : pl.lastName,
+//     number : pl.number,
+//     position : pl.position,
+//     image : pl.profileBig,
+//     linedUp : pl.dayStatus === 1,
+//     totalPoints : pl.totalPoints,
+//     averagePoints : pl.averagePoints,
+//     marketValue : pl.marketValue,
+//     marketValueTrend : pl.marketValueTrend
+//   }))
+// }
 
 
 const getUserPlayers = async (leagueId, user) => {
@@ -142,6 +144,73 @@ const getUserPlayers = async (leagueId, user) => {
 }
 
 
+const getUserPlayersExtended = async (leagueId, user) => {
+  const players = await getUserPlayers(leagueId, user)
+  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id)))
+  const playerMarketValueHistory = await Promise.all(players.map(p => getPlayerMarketValueHistory(leagueId, p.id)))
+  return players.map(p => ({
+    ...p,
+    pointHistory : playerPointHistory.find(h => h.id === p.id).pointHistory,
+    marketValueHistory : playerMarketValueHistory.find(h => h.id === p.id).marketValueHistory
+  }))
+}
+
+
+
+const getPlayerPointHistory = async (player) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const responses = await Promise.all([
+    axios.get(`${baseUrl}/players/${player}/points`, config),
+    openligadbService.getMatchDays()
+  ])
+  // console.log('clubs.find...', responses[0].data.s.map(s => s.m.map(m => ({
+  //   matchDateTime : responses[1].find(md => md.day === m.d).matches.find(m =>
+  //     m => m.team1 === getMatchingId(m.t1i) ||  m.team1 === getMatchingId(m.t2i)
+  //   ).matchDateTime
+  // }))))
+  return {
+    id : player,
+    pointHistory : responses[0].data.s.map(s => ({
+      matches : s.m.map(m => ({
+        season : {
+          id : s.i,
+          name : s.t
+        },
+        day : m.d,
+        matchDateTime : s.i === 23 ? '2022' : responses[1].find(md => md.day === m.d).matches.find(m =>
+          m => m.team1 === getMatchingId(m.t1i) ||  m.team1 === getMatchingId(m.t2i)
+        ).matchDateTime,
+        points : m.p,
+        // team1 : {
+        //   id : m.t1i,
+        //   result : m.t1s
+        // },
+        // team2 : {
+        //   id : m.t2i,
+        //   result : m.t2s
+        // }
+      }))
+    })).map(s => s.matches).flat(1)
+  }
+}
+
+const getPlayerMarketValueHistory = async (leagueId, player) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/players/${player}/stats`, config)
+  return {
+    id : player,
+    marketValueHistory : response.data.marketValues.map(m => ({
+      day : m.d,
+      marketValue : m.m
+    }))
+  }
+}
+
+
 
 export default {
   setToken,
@@ -150,7 +219,10 @@ export default {
   getCurrentMatchDay,
   getLive,
   getPlayersForMatchDay,
-  getLineup,
-  getLineupExtended,
-  getUserPlayers
+  // getLineup,
+  // getLineupExtended,
+  getUserPlayers,
+  getUserPlayersExtended,
+  // getPlayerPointHistory,
+  // getPlayerMarketValueHistory
 }

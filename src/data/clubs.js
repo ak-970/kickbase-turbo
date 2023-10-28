@@ -77,4 +77,14 @@ let clubs = [
   }
 ]
 
-export { clubs }
+const getMatchingId = id => {
+  if (clubs.find(c => c.id === id)) {
+    return clubs.find(c => c.id === id).openligaId
+  } else if (clubs.find(c => c.openligaId === id)) {
+    return clubs.find(c => c.openligaId === id).id
+  } else {
+    return 0
+  }
+}
+
+export { clubs, getMatchingId }
