@@ -8,6 +8,7 @@ import { clubs } from './data/clubs'
 import LoginForm from './components/LoginForm'
 import Overview from './components/Overview'
 import Squad from './components/Squad'
+import Market from './components/Market'
 import Notification from './components/Notification'
 // import Togglable from './components/Togglable'
 
@@ -23,7 +24,7 @@ const App = () => {
   const [league, setLeague] = useState(0)
   const [users, setUsers] = useState(null)
   // const [tab, setTab] = useState('overview')
-  const [tab, setTab] = useState('squad')
+  const [tab, setTab] = useState('market')
   const [notification, setNotification] = useState({ message : null, type : '' })
 
 
@@ -106,8 +107,12 @@ const App = () => {
     {
       nameId : 'market',
       name : 'Transfermarkt',
-      inactive : true,
-      element : <h2>Transfers...</h2>
+      element : <Market
+        user={user}
+        league={league}
+        users={users}
+        clubs={clubs}
+      />
     }
   ]
 
