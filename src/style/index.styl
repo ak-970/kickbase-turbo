@@ -1,3 +1,8 @@
+$color2 = #e5e5e5
+$color2-dark = #d9d9d9
+$color2-light = #f1f1f1
+
+
 body
   font-family sans-serif
   line-height 1.4em
@@ -19,7 +24,7 @@ section
 button
 input[type='submit']
   appearance none
-  background #e5e5e5
+  background $color2
   border none
   margin 5px 0
   padding 7px 15px
@@ -28,12 +33,12 @@ input[type='submit']
 button:hover
 input[type='submit']:hover
   cursor pointer
-  background #d9d9d9
+  background $color2-dark
 
   
 .notification
   color blue
-  background lightgrey
+  background $color2-light
   font-size 20px
   border-style solid
   border-radius 5px
@@ -47,73 +52,6 @@ input[type='submit']:hover
   color green
 
 
-.blog-list
-  display flex
-  flex-flow row wrap
-  justify-content start
-  align-items start
-  gap 14px
-  margin 30px 0
-  padding 0
-
-  .blog
-    // width @css{calc(50% - 7px)}
-    width 100%
-    display flex
-    flex-flow row nowrap
-    justify-content start
-    align-items stretch
-    gap 15px 0
-
-    .vote
-      width 50px
-      display flex
-      flex-flow column wrap
-      align-items center
-      padding 10px 0
-
-      button
-        appearance none
-        background-color transparent
-        border none
-
-      button:hover
-        cursor pointer
-
-    a.info
-      position relative
-      // width @css{calc(100% - 90px)}
-      width 100%
-      text-decoration none
-      color inherit
-      // background #e5e5e5
-      background #d9d9d9
-      padding 10px 20px
-      transition background .3s ease
-
-      > span
-        display block
-        padding 2px 0
-
-        > b
-          font-size 1.3em
-
-      button.remove-blog
-        background #000
-        color #fff
-
-      button.remove-blog:hover
-        background #4b4b4b
-
-      button.toggle-visibility
-        position absolute
-        top 10px
-        right 20px
-        margin 0
-
-    a.info:hover
-      // background #d9d9d9
-      background #c2c2c2
 
 
 form
@@ -129,6 +67,8 @@ form
     label
       display inline-block
       width 84px
+
+
 
 
 
@@ -161,7 +101,7 @@ form
       flex-flow row nowrap
       justify-content space-between
       align-items center
-      background lightgray
+      background $color2
       padding 5px 10px
 
       &.pending
@@ -186,27 +126,6 @@ form
         font-size 0.7em
         line-height 1.8em
 
-    .player-item
-      display flex
-      flex-flow row nowrap
-      justify-content space-between
-      align-items center
-      gap 10px
-
-      &.not-lined-up
-        opacity 0.4
-
-      .player
-        display flex
-        flex-flow row nowrap
-        gap 5px
-
-        .team-icon
-          display block
-          width 20px
-          height 20px
-          object-fit contain
-
     // ul
     //   list-style-type none
     //   margin 10px 0 0 0
@@ -220,24 +139,82 @@ form
 
 
 
-.squad-list
-  .player-position
-    display flex
-    flex-flow row wrap
-    justify-content start
-    align-items start
-    gap 15px
+.player-item
+  display flex
+  flex-flow row wrap
+  justify-content space-between
+  align-items center
+  gap 10px
 
-    h3
-      margin-bottom 0
+  // &.player-s
+  //   flex-flow row nowrap
 
-    h3
-    .player-item
-      width 100%
+  &.player-l
+    .person
+      display flex
+      flex-flow row nowrap
+      justify-content space-between
+      align-items end
+      gap 15px
+
+      img
+        display block
+        width 70px
+        height 80px
+        object-fit cover
 
     .chart-container
-      width 700px
-      max-width 100%
+      width 100%
+
+
+
+  &.not-lined-up
+    opacity 0.4
+
+  .player
+    display flex
+    flex-flow row nowrap
+    gap 5px
+
+    .team-icon
+      display block
+      width 20px
+      height 20px
+      object-fit contain
+
+
+
+.player-item-group
+  display flex
+  flex-flow row wrap
+  justify-content start
+  align-items start
+  gap 15px
+  width 100%
+
+  h3
+    margin-bottom 0
+
+  h3
+  .player-item
+    width 100%
+
+  &.player-l .player-item
+    width @css{calc(50% - 17.5px)}
+    background: $color2-light
+    padding 5px
+
+
+
+.player-list
+  display flex
+  flex-flow row wrap
+  justify-content start
+  align-items start
+  gap 35px
+
+
+
 
 
 .hide

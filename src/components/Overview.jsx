@@ -4,14 +4,17 @@ import { useState, useEffect } from 'react'
 import kickbaseService from '../services/kickbase'
 import openligadbService from '../services/openligadb'
 
-const Player = ({ player, clubIcon }) =>
-  <div className={`player-item ${player.linedUp ? 'lined-up' : 'not-lined-up'}`}>
-    <div className='player'>
-      <img className="team-icon" src={clubIcon} />
-      {player.firstName} {player.lastName}
-    </div>
-    <div className="points">{player.points}</div>
-  </div>
+// components
+import PlayerS from './PlayerS'
+
+// const Player = ({ player, clubIcon }) =>
+//   <div className={`player-item ${player.linedUp ? 'lined-up' : 'not-lined-up'}`}>
+//     <div className='player'>
+//       <img className="team-icon" src={clubIcon} />
+//       {player.firstName} {player.lastName}
+//     </div>
+//     <div className="points">{player.points}</div>
+//   </div>
 
 
 const MatchBanner = ({ match, clubs }) => {
@@ -138,7 +141,7 @@ const Overview = ({ user, league, users, clubs }) => {
                 />
                 {playersForMatchDay.find(p => p.user === u.id)
                 && playersForMatchDay.find(p => p.user === u.id).players.filter(player => playsInThisMatch(player, match)).map(player =>
-                  <Player
+                  <PlayerS
                     key={player.id}
                     player={player}
                     clubIcon={clubs.find(c => c.id === player.club).icon}

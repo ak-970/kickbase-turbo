@@ -133,7 +133,7 @@ const App = () => {
             <nav>
               <button onClick={() => setTab('overview')}>Overview</button>&nbsp;
               <button onClick={() => setTab('squad')}>Kader</button>&nbsp;
-              <button onClick={() => setTab('transfers')}>Transfers</button>
+              <button onClick={() => setTab('transfers')} disabled>Transfers</button>
             </nav>
           </section>
 
