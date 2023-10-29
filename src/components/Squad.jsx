@@ -18,21 +18,28 @@ const Squad = ({ user, league, users, clubs }) => {
 
   // use states
   const [players, setPlayers] = useState([])
+  const [userSquad, setUserSquad] = useState(user.id)
 
   useEffect(() => {
     kickbaseService
-      .getUserPlayersExtended(league, user.id)
+      .getUserPlayersExtended(league, userSquad)
       .then(lineup => {
         console.log('userPlayersExtended', lineup)
         setPlayers(lineup)
       })
-  }, [league])
+  }, [league, userSquad])
 
   console.log('players', players)
+  console.log('users', users)
 
   return (
     <section className='squad'>
-      <h2>Kader</h2>
+      {/* <h2>Kader</h2> */}
+      <div className='buttons'>
+        {users && users.map(u =>
+          <button key={u.id} className={u.id === userSquad ? 'selected' : ''} onClick={() => setUserSquad(u.id)}>{u.name}</button>
+        )}
+      </div>
       <div className='player-list squad'>
         {positions.map(position =>
           <div key={position.id} className='player-item-group player-l'>

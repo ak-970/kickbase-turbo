@@ -82,28 +82,34 @@ const App = () => {
   }
 
 
-  const content = () => {
-    switch(tab) {
-    case 'overview':
-      return <Overview
+  const tabs = [
+    {
+      nameId : 'overview',
+      name : 'Übersicht',
+      element : <Overview
         user={user}
         league={league}
         users={users}
         clubs={clubs}
       />
-    case 'squad':
-      return <Squad
+    },
+    {
+      nameId : 'squad',
+      name : 'Kader',
+      element : <Squad
         user={user}
         league={league}
         users={users}
         clubs={clubs}
       />
-    case 'transfers':
-      return <h2>Transfers...</h2>
-    default:
-      return
+    },
+    {
+      nameId : 'market',
+      name : 'Transfermarkt',
+      inactive : true,
+      element : <h2>Transfers...</h2>
     }
-  }
+  ]
 
   return (
     <div>
@@ -130,14 +136,21 @@ const App = () => {
           </section>
 
           <section>
-            <nav>
-              <button onClick={() => setTab('overview')}>Overview</button>&nbsp;
-              <button onClick={() => setTab('squad')}>Kader</button>&nbsp;
-              <button onClick={() => setTab('transfers')} disabled>Transfers</button>
+            <nav className='buttons'>
+              {tabs.map(t =>
+                <button
+                  key={t.nameId}
+                  onClick={() => setTab(t.nameId)}
+                  disabled={t.inactive}
+                  className={t.nameId === tab ? 'selected' : ''}
+                >
+                  {t.name}
+                </button>
+              )}
             </nav>
           </section>
 
-          {content()}
+          {tabs.find(t => t.nameId === tab).element}
         </>
       }
 
