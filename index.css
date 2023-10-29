@@ -173,6 +173,12 @@ form div label {
   height: 80px;
   object-fit: cover;
 }
+.player-item.player-l .person .offer .good {
+  color: #1e771e;
+}
+.player-item.player-l .person .offer .bad {
+  color: #771a1a;
+}
 .player-item.player-l .chart-container {
   width: 100%;
 }

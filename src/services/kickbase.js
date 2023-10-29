@@ -211,6 +211,43 @@ const getPlayerMarketValueHistory = async (leagueId, player) => {
 }
 
 
+const getMarket = async (leagueId, user) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/market`, config)
+  return response.data.players.filter(pl => user === (pl.userId || 'kickbase')).map(pl => ({
+    id : pl.id,
+    club : pl.teamId,
+    firstName : pl.firstName,
+    lastName : pl.lastName,
+    number : pl.number,
+    position : pl.position,
+    totalPoints : pl.totalPoints,
+    averagePoints : pl.averagePoints,
+    marketValue : pl.marketValue,
+    marketValueTrend : pl.marketValueTrend,
+    price : pl.price,
+    user : pl.userId || 'kickbase',
+    offers : !pl.offers ? [] : pl.offers.map(o => ({
+      id : o.id,
+      price : o.price
+    }))
+  }))
+}
+
+
+const getMarketExtended = async (leagueId, user) => {
+  const players = await getMarket(leagueId, user)
+  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id)))
+  const playerMarketValueHistory = await Promise.all(players.map(p => getPlayerMarketValueHistory(leagueId, p.id)))
+  return players.map(p => ({
+    ...p,
+    pointHistory : playerPointHistory.find(h => h.id === p.id).pointHistory,
+    marketValueHistory : playerMarketValueHistory.find(h => h.id === p.id).marketValueHistory
+  }))
+}
+
 
 export default {
   setToken,
@@ -224,5 +261,7 @@ export default {
   getUserPlayers,
   getUserPlayersExtended,
   // getPlayerPointHistory,
-  // getPlayerMarketValueHistory
+  // getPlayerMarketValueHistory,
+  // getMarket,
+  getMarketExtended
 }

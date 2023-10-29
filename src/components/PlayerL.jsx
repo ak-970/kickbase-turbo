@@ -90,9 +90,9 @@ const PlayerL = ({ player }) => {
   return (
     <div className='player-item player-l' key={player.id}>
       <div className='person'>
-        <div className='image'>
+        {player.image && <div className='image'>
           <img src={player.image} />
-        </div>
+        </div>}
         <div className='info'>
           <div><b>{player.firstName} {player.lastName}</b></div>
           <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.averagePoints)}</div>
@@ -101,6 +101,13 @@ const PlayerL = ({ player }) => {
             <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} />
           </div>
         </div>
+        {player.offers && <div className='offers'>
+          {player.offers.map(o =>
+            <div key={o.id} className='offer'>
+              Angebot: € <b className={o.price > player.marketValue ? 'good' : 'bad'}>{formatNumber(o.price)}</b>
+            </div>
+          )}
+        </div>}
       </div>
       <div className='chart-container'>
         <ChartCanvas data={chartData}/>
