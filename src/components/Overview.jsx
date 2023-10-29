@@ -109,7 +109,7 @@ const Overview = ({ user, league, users, clubs }) => {
   return (!currentMatchdayData || playersForMatchDay.length < 1) ? <p>keine Daten</p> : (
     <section className='overview'>
       {/* <h2>Overview <button onClick={() => setUpdateOverview(!updateOverview)}>update</button></h2> */}
-      <h2>Overview</h2>
+      {/* <h2>Overview</h2> */}
 
       <div>
         <label htmlFor='matchDay'>Spieltag: </label>

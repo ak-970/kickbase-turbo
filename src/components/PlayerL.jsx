@@ -2,9 +2,11 @@ import { useState } from 'react'
 
 // utils
 import formatDate from '../utils/formatDate'
+import formatNumber from '../utils/formatNumber'
 
 // components
 import ChartCanvas from './ChartCanvas'
+import Icon from './Icon'
 
 
 const PlayerL = ({ player }) => {
@@ -44,7 +46,6 @@ const PlayerL = ({ player }) => {
         label: 'Marktwert/100k',
         tension: 0.2,
         pointRadius : 0,
-        // yAxisID : 'marketValue',
         data: player.marketValueHistory.slice(-statDays).map(h => ({
           x : formatDate(h.day, 'D.M.YY'),
           y : h.marketValue / 100000
@@ -53,7 +54,6 @@ const PlayerL = ({ player }) => {
       {
         type: 'bar',
         label: 'Punkte',
-        // yAxisID : 'points',
         data: pointHistoryExtended().map(h => ({
           x : formatDate(h.matchDateTime, 'D.M.YY'),
           y : h.points
@@ -64,8 +64,6 @@ const PlayerL = ({ player }) => {
         label: 'Punkte Ø',
         tension: 0.3,
         pointRadius : 0,
-        // fill: 'origin',
-        // yAxisID : 'points',
         data: pointHistoryExtended().map(h => ({
           x : formatDate(h.matchDateTime, 'D.M.YY'),
           y : h.pointsAverage
@@ -74,8 +72,6 @@ const PlayerL = ({ player }) => {
       {
         type: 'line',
         label: 'zero',
-        // hiddenLegend: true,
-        // borderColor: '#000',
         pointRadius : 0,
         data: [
           {
@@ -98,9 +94,12 @@ const PlayerL = ({ player }) => {
           <img src={player.image} />
         </div>
         <div className='info'>
-          <div><b>{player.firstName} {player.lastName}</b> ID {player.id}</div>
-          <div>P {player.totalPoints}, Ø {player.averagePoints}</div>
-          <div>€ {player.marketValue} {player.marketValueTrend === 1 ? '↑' : '↓'}</div>
+          <div><b>{player.firstName} {player.lastName}</b></div>
+          <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.averagePoints)}</div>
+          <div>
+            € {formatNumber(player.marketValue)}&nbsp;
+            <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} />
+          </div>
         </div>
       </div>
       <div className='chart-container'>
