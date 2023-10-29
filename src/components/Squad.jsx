@@ -9,6 +9,7 @@ import openligadbService from '../services/openligadb'
 
 // components
 import PlayerL from './PlayerL'
+import Icon from './Icon'
 
 // data
 import { positions } from '../data/positions'
@@ -19,18 +20,26 @@ const Squad = ({ user, league, users, clubs }) => {
   // use states
   const [players, setPlayers] = useState([])
   const [userSquad, setUserSquad] = useState(user.id)
+  const [loadedData, setLoadedData] = useState(false)
 
   useEffect(() => {
+    setUserSquad(user.id)
+  }, [league])
+
+  useEffect(() => {
+    setLoadedData(false)
     kickbaseService
       .getUserPlayersExtended(league, userSquad)
       .then(lineup => {
         console.log('userPlayersExtended', lineup)
         setPlayers(lineup)
+        setLoadedData(true)
       })
   }, [league, userSquad])
 
-  console.log('players', players)
-  console.log('users', users)
+  // console.log('players', players)
+  // console.log('users', users)
+  // console.log('userSquad', userSquad)
 
   return (
     <section className='squad'>
@@ -41,13 +50,15 @@ const Squad = ({ user, league, users, clubs }) => {
         )}
       </div>
       <div className='player-list squad'>
-        {positions.map(position =>
-          <div key={position.id} className='player-item-group player-l'>
-            <h3>{position.name}</h3>
-            {players.filter(p => p.position === position.id).map(player =>
-              <PlayerL key={player.id} player={player} />
-            )}
-          </div>
+        {!loadedData
+          ? <Icon type='spinner' />
+          : positions.map(position =>
+            <div key={position.id} className='player-item-group player-l'>
+              <h3>{position.name}</h3>
+              {players.filter(p => p.position === position.id).map(player =>
+                <PlayerL key={player.id} player={player} />
+              )}
+            </div>
         )}
       </div>
     </section>
