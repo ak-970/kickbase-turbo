@@ -6,6 +6,7 @@ import openligadbService from '../services/openligadb'
 
 // components
 import PlayerS from './PlayerS'
+import Icon from './Icon'
 
 // const Player = ({ player, clubIcon }) =>
 //   <div className={`player-item ${player.linedUp ? 'lined-up' : 'not-lined-up'}`}>
@@ -106,11 +107,9 @@ const Overview = ({ user, league, users, clubs }) => {
 
 
 
-  return (!currentMatchdayData || playersForMatchDay.length < 1) ? <p>keine Daten</p> : (
+  return (!currentMatchdayData || playersForMatchDay.length < 1) ? <Icon type='spinner' /> : (
     <section className='overview'>
-      {/* <h2>Overview <button onClick={() => setUpdateOverview(!updateOverview)}>update</button></h2> */}
-      {/* <h2>Overview</h2> */}
-
+  
       <div>
         <label htmlFor='matchDay'>Spieltag: </label>
         <input id='matchDay' type='number' min={1} max={22} value={matchDay} onChange={() => setMatchDay(parseInt(event.target.value))}/>
