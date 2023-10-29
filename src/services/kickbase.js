@@ -216,7 +216,7 @@ const getMarket = async (leagueId, user) => {
     headers: { Authorization: token }
   }
   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/market`, config)
-  return response.data.players.filter(pl => user === (pl.userId || 'kickbase')).map(pl => ({
+  return response.data.players.filter(pl => user === (pl.userId || 'kickbase')).sort((a, b) => (a.expiry - b.expiry)).map(pl => ({
     id : pl.id,
     club : pl.teamId,
     firstName : pl.firstName,
@@ -228,10 +228,13 @@ const getMarket = async (leagueId, user) => {
     marketValue : pl.marketValue,
     marketValueTrend : pl.marketValueTrend,
     price : pl.price,
+    expiry : pl.expiry,
     user : pl.userId || 'kickbase',
     offers : !pl.offers ? [] : pl.offers.map(o => ({
       id : o.id,
-      price : o.price
+      price : o.price,
+      dateOffer : o.date,
+      dateExpiry : o.validUntilDate
     }))
   }))
 }
