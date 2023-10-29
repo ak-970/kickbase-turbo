@@ -175,3 +175,26 @@ form div label {
 .hide {
   display: none !important;
 }
+@media (min-width: 600px) and (max-width: 899px) {
+  .player-item.player-l {
+    flex-wrap: nowrap;
+    align-items: start;
+  }
+  .player-item.player-l .person {
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: start;
+  }
+  .player-item.player-l .person img {
+    width: 120px;
+    height: 150px;
+  }
+  .player-item-group.player-l .player-item {
+    width: 100%;
+  }
+}
+@media (max-width: 599px) {
+  .player-item-group.player-l .player-item {
+    width: 100%;
+  }
+}

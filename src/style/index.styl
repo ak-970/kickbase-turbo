@@ -221,7 +221,31 @@ form
   display none !important
 
 
-// @media (max-width: 899px)
-//   .blog-list
-//     .blog
-//       width 100%
+
+
+@media (min-width: 600px) and (max-width: 899px)
+  .player-item
+    &.player-l
+      flex-wrap nowrap
+      align-items start
+
+      .person
+        flex-wrap wrap
+        justify-content start
+        align-items start
+
+        img
+          width 120px
+          height 150px
+  
+
+  .player-item-group
+    &.player-l .player-item
+      width 100%
+
+
+
+@media (max-width: 599px)
+  .player-item-group
+    &.player-l .player-item
+      width 100%
