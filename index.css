@@ -30,7 +30,7 @@ input[type='submit']:hover {
 }
 .notification {
   color: #00f;
-  background: #d3d3d3;
+  background: #f1f1f1;
   font-size: 20px;
   border-style: solid;
   border-radius: 5px;
@@ -42,70 +42,6 @@ input[type='submit']:hover {
 }
 .notification.success {
   color: #008000;
-}
-.blog-list {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: start;
-  align-items: start;
-  gap: 14px;
-  margin: 30px 0;
-  padding: 0;
-}
-.blog-list .blog {
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: start;
-  align-items: stretch;
-  gap: 15px 0;
-}
-.blog-list .blog .vote {
-  width: 50px;
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  padding: 10px 0;
-}
-.blog-list .blog .vote button {
-  appearance: none;
-  background-color: transparent;
-  border: none;
-}
-.blog-list .blog .vote button:hover {
-  cursor: pointer;
-}
-.blog-list .blog a.info {
-  position: relative;
-  width: 100%;
-  text-decoration: none;
-  color: inherit;
-  background: #d9d9d9;
-  padding: 10px 20px;
-  transition: background 0.3s ease;
-}
-.blog-list .blog a.info > span {
-  display: block;
-  padding: 2px 0;
-}
-.blog-list .blog a.info > span > b {
-  font-size: 1.3em;
-}
-.blog-list .blog a.info button.remove-blog {
-  background: #000;
-  color: #fff;
-}
-.blog-list .blog a.info button.remove-blog:hover {
-  background: #4b4b4b;
-}
-.blog-list .blog a.info button.toggle-visibility {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  margin: 0;
-}
-.blog-list .blog a.info:hover {
-  background: #c2c2c2;
 }
 form {
   display: flex;
@@ -150,7 +86,7 @@ form div label {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  background: #d3d3d3;
+  background: #e5e5e5;
   padding: 5px 10px;
 }
 .overview .teams .team .match-banner.pending {
@@ -172,45 +108,93 @@ form div label {
   font-size: 0.7em;
   line-height: 1.8em;
 }
-.overview .teams .team .player-item {
+.player-item {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
-.overview .teams .team .player-item.not-lined-up {
+.player-item.player-l .person {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 15px;
+}
+.player-item.player-l .person img {
+  display: block;
+  width: 70px;
+  height: 80px;
+  object-fit: cover;
+}
+.player-item.player-l .chart-container {
+  width: 100%;
+}
+.player-item.not-lined-up {
   opacity: 0.4;
 }
-.overview .teams .team .player-item .player {
+.player-item .player {
   display: flex;
   flex-flow: row nowrap;
   gap: 5px;
 }
-.overview .teams .team .player-item .player .team-icon {
+.player-item .player .team-icon {
   display: block;
   width: 20px;
   height: 20px;
   object-fit: contain;
 }
-.squad-list .player-position {
+.player-item-group {
   display: flex;
   flex-flow: row wrap;
   justify-content: start;
   align-items: start;
   gap: 15px;
-}
-.squad-list .player-position h3 {
-  margin-bottom: 0;
-}
-.squad-list .player-position h3,
-.squad-list .player-position .player-item {
   width: 100%;
 }
-.squad-list .player-position .chart-container {
-  width: 700px;
-  max-width: 100%;
+.player-item-group h3 {
+  margin-bottom: 0;
+}
+.player-item-group h3,
+.player-item-group .player-item {
+  width: 100%;
+}
+.player-item-group.player-l .player-item {
+  width: calc(50% - 17.5px);
+  background: #f1f1f1;
+  padding: 5px;
+}
+.player-list {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+  align-items: start;
+  gap: 35px;
 }
 .hide {
   display: none !important;
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .player-item.player-l {
+    flex-wrap: nowrap;
+    align-items: start;
+  }
+  .player-item.player-l .person {
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: start;
+  }
+  .player-item.player-l .person img {
+    width: 120px;
+    height: 150px;
+  }
+  .player-item-group.player-l .player-item {
+    width: 100%;
+  }
+}
+@media (max-width: 599px) {
+  .player-item-group.player-l .player-item {
+    width: 100%;
+  }
 }
