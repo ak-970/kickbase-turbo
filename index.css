@@ -153,6 +153,9 @@ form div label {
   font-size: 0.7em;
   line-height: 1.8em;
 }
+.market .player-list {
+  padding-top: 20px;
+}
 .player-item {
   display: flex;
   flex-flow: row wrap;

@@ -4,9 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import kickbaseService from '../services/kickbase'
 import openligadbService from '../services/openligadb'
 
-// // utils
-// import formatDate from '../utils/formatDate'
-
 // components
 import PlayerL from './PlayerL'
 import Icon from './Icon'
@@ -56,7 +53,7 @@ const Market = ({ user, league, users, clubs }) => {
           <button key={u.id} className={u.id === userMarket ? 'selected' : ''} onClick={() => setUserMarket(u.id)}>{u.name}</button>
         )}
       </div>
-      <div className='player-list market'>
+      <div className='player-list'>
         <div className='player-item-group player-l'>
           {!loadedData
             ? <Icon type='spinner' />

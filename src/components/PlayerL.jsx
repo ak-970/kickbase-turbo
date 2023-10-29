@@ -3,6 +3,7 @@ import { useState } from 'react'
 // utils
 import formatDate from '../utils/formatDate'
 import formatNumber from '../utils/formatNumber'
+import formatTime from '../utils/formatTime'
 
 // components
 import ChartCanvas from './ChartCanvas'
@@ -101,13 +102,22 @@ const PlayerL = ({ player }) => {
             <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} />
           </div>
         </div>
-        {player.offers && <div className='offers'>
-          {player.offers.map(o =>
+        <div className='offers'>
+          {player.expiry &&
+            <div key={player.id} className='expiry'>
+              Läuft ab in {formatTime(player.expiry * 1000)}
+            </div>
+          }
+          {player.offers && player.offers.map(o =>
             <div key={o.id} className='offer'>
-              Angebot: € <b className={o.price > player.marketValue ? 'good' : 'bad'}>{formatNumber(o.price)}</b>
+              Angebot: €&nbsp;
+              <b className={o.price > player.marketValue ? 'good' : 'bad'}>
+                {formatNumber(o.price)}
+              </b>&nbsp;
+              ({formatTime(new Date(o.dateExpiry) - new Date())})
             </div>
           )}
-        </div>}
+        </div>
       </div>
       <div className='chart-container'>
         <ChartCanvas data={chartData}/>
