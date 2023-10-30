@@ -95,7 +95,7 @@ const PlayerL = ({ player }) => {
           <img src={player.image} />
         </div>}
         <div className='info'>
-          <div><b>{player.firstName} {player.lastName}</b></div>
+          <div><b className='name'>{player.firstName} {player.lastName}</b> {player.linedUp && <Icon type='person-circle-check-green' />}</div>
           <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.averagePoints)}</div>
           <div>
             € {formatNumber(player.marketValue)}&nbsp;
