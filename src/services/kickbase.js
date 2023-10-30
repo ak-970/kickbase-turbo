@@ -165,11 +165,6 @@ const getPlayerPointHistory = async (player) => {
     axios.get(`${baseUrl}/players/${player}/points`, config),
     openligadbService.getMatchDays()
   ])
-  // console.log('clubs.find...', responses[0].data.s.map(s => s.m.map(m => ({
-  //   matchDateTime : responses[1].find(md => md.day === m.d).matches.find(m =>
-  //     m => m.team1 === getMatchingId(m.t1i) ||  m.team1 === getMatchingId(m.t2i)
-  //   ).matchDateTime
-  // }))))
   return {
     id : player,
     pointHistory : responses[0].data.s.map(s => ({
@@ -252,6 +247,32 @@ const getMarketExtended = async (leagueId, user) => {
 }
 
 
+
+const getFeed = async (leagueId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/feed`, config)
+  const types = [
+    { id : '2', name : 'meta.s.. hat meta.p.. an Kickbase verkauft' },
+    { id : '3', name : 'meta.p.. ist auf dem Transfermarkt' },
+    { id : '12', name : 'meta.b.. hat meta.p.. von Kickbase gekauft' }
+  ]
+  return response.data
+}
+
+
+const getMyBudget = async (leagueId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/me`, config)
+  return response.data.budget
+}
+
+
+
+
 export default {
   setToken,
   // getOverview,
@@ -265,6 +286,7 @@ export default {
   getUserPlayersExtended,
   // getPlayerPointHistory,
   // getPlayerMarketValueHistory,
-  // getMarket,
-  getMarketExtended
+  getMarket,
+  getMarketExtended,
+  getMyBudget
 }

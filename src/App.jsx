@@ -9,6 +9,7 @@ import LoginForm from './components/LoginForm'
 import Overview from './components/Overview'
 import Squad from './components/Squad'
 import Market from './components/Market'
+import Budget from './components/Budget'
 import Notification from './components/Notification'
 // import Togglable from './components/Togglable'
 
@@ -23,7 +24,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [league, setLeague] = useState(0)
   const [users, setUsers] = useState(null)
-  const [tab, setTab] = useState('overview')
+  const [tab, setTab] = useState('budget')
   const [notification, setNotification] = useState({ message : null, type : '' })
 
 
@@ -107,6 +108,16 @@ const App = () => {
       nameId : 'market',
       name : 'Transfermarkt',
       element : <Market
+        user={user}
+        league={league}
+        users={users}
+        clubs={clubs}
+      />
+    },
+    {
+      nameId : 'budget',
+      name : 'Budget',
+      element : <Budget
         user={user}
         league={league}
         users={users}
