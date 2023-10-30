@@ -1,4 +1,4 @@
-const formatTime = (ms) => {
+const formatTime = (ms, format) => {
   const weekFactor = 1000 * 60 * 60 * 24 * 7
   const dayFactor = 1000 * 60 * 60 * 24
   const hourFactor = 1000 * 60 * 60
@@ -19,8 +19,12 @@ const formatTime = (ms) => {
     { short : 's', value : seconds },
   ]
 
-
-  return time.map(t => t.value > 0 ? `${t.value}${t.short}` : '').filter(t => t !== '').join(' ')
+  switch(format) {
+    case 'hh:mm':
+      return `${`00${hours}`.slice(-2)}:${`00${minutes}`.slice(-2)}`
+    default:
+      return time.map(t => t.value > 0 ? `${t.value}${t.short}` : '').filter(t => t !== '').join(' ')
+    }
 }
 
 export default formatTime

@@ -8,6 +8,11 @@ import openligadbService from '../services/openligadb'
 import PlayerS from './PlayerS'
 import Icon from './Icon'
 
+// utils
+import formatDate from '../utils/formatDate'
+// import formatNumber from '../utils/formatNumber'
+import formatTime from '../utils/formatTime'
+
 
 const MatchBanner = ({ match, clubs }) => {
   const matchStatus = match.finished ? 'finished' : 'now-pending'
@@ -19,7 +24,7 @@ const MatchBanner = ({ match, clubs }) => {
         <img className="team-icon" src={clubs.find(c => c.openligaId === match.team1.id).icon} />
       </div>
       <div className="info">
-        <div className="time">{`${days[date.getDay()]} ${date.getDate()}.${date.getMonth()}.${date.getFullYear() - 2000} ${date.getHours()}:${date.getMinutes() === 0 ? '00' : date.getMinutes()}`}</div>
+        <div className="time">{`${days[date.getDay()]} ${formatDate(date, 'D.M.YY')} ${formatTime(date, 'hh:mm')}`}</div>
         <div className="result">{`${match.team1.result} : ${match.team2.result}`}</div>
       </div>
       <div className="team-2">
