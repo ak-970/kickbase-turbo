@@ -13,6 +13,7 @@ import Icon from './Icon'
 
 // data
 import { positions } from '../data/positions'
+import { formatNumber } from 'chart.js/helpers'
 
 
 const Squad = ({ user, league, users, clubs }) => {
@@ -37,7 +38,7 @@ const Squad = ({ user, league, users, clubs }) => {
       })
   }, [league, userSquad])
 
-  // console.log('players', players)
+  console.log('players', players)
   // console.log('users', users)
   // console.log('userSquad', userSquad)
 
@@ -49,6 +50,11 @@ const Squad = ({ user, league, users, clubs }) => {
           <button key={u.id} className={u.id === userSquad ? 'selected' : ''} onClick={() => setUserSquad(u.id)}>{u.name}</button>
         )}
       </div>
+      <p>
+        Durschnittspunkte von allen aufgestellten Spielerinnen zusammen: <b>{
+          formatNumber(players.filter(p => p.linedUp).reduce((a, b) => (a + b.averagePoints), 0))
+        }</b>
+      </p>
       <div className='player-list squad'>
         {!loadedData
           ? <Icon type='spinner' />
@@ -59,7 +65,8 @@ const Squad = ({ user, league, users, clubs }) => {
                 <PlayerL key={player.id} player={player} />
               )}
             </div>
-        )}
+          )
+        }
       </div>
     </section>
   )

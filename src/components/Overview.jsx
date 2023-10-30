@@ -101,7 +101,7 @@ const Overview = ({ user, league, users, clubs }) => {
     [match.team1.id, match.team2.id].includes(clubs.find(c => c.id === player.club).openligaId)
 
 
-
+  // console.log('playersForMatchDay', playersForMatchDay)
 
   return (!currentMatchdayData || playersForMatchDay.length < 1) ? <Icon type='spinner' /> : (
     <section className='overview'>
