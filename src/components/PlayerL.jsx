@@ -13,32 +13,7 @@ import Icon from './Icon'
 const PlayerL = ({ player }) => {
 
   // use states
-  const [statDays, setStatDays] = useState(70)
-
-  const pointHistoryExtended = () => {
-    let history = player.pointHistory.filter(h => h.matchDateTime !== '2022').reduce((a, b) => (a.concat({
-      ...b,
-      pointsTotal : a.reduce((a2, b2) => (a2 + b2.points), 0) + b.points,
-      pointsAverage : (a.reduce((a2, b2) => (a2 + b2.points), 0) + b.points) / b.day
-    })), [])
-    history.unshift({
-      day : 0,
-      matchDateTime : player.marketValueHistory.slice(-statDays)[0].day,
-      points : 0,
-      pointsTotal : 0,
-      pointsAverage : 0
-    })
-    history.push({
-      day : 0,
-      matchDateTime : player.marketValueHistory.slice(-1)[0].day,
-      points : 0,
-      pointsTotal : history.slice(-1)[0].pointsTotal,
-      pointsAverage : history.slice(-1)[0].pointsAverage
-    })
-    return history
-  }
-
-
+  const [statDays, setStatDays] = useState(80)
 
   const chart = {
     data : {
@@ -56,20 +31,46 @@ const PlayerL = ({ player }) => {
         {
           type: 'bar',
           label: 'Punkte',
-          data: pointHistoryExtended().map(h => ({
-            x : formatDate(h.matchDateTime, 'D.M.YY'),
-            y : h.points
-          }))
+          data: player.pointHistory
+            .filter(h => (
+              player.marketValueHistory.slice(-statDays).map(h2 => formatDate(h2.day, 'D.M.YY')).includes(formatDate(h.matchDateTime, 'D.M.YY'))
+            ))
+            .map(h => ({
+              x : formatDate(h.matchDateTime, 'D.M.YY'),
+              y : h.points
+            }))
         },
+        // {
+        //   type: 'line',
+        //   label: 'Ø Punkte gespielt',
+        //   tension: 0.2,
+        //   pointRadius : 0,
+        //   data: player.pointHistory
+        //     .filter(h => (
+        //       player.marketValueHistory.slice(-statDays).map(h2 => formatDate(h2.day, 'D.M.YY')).includes(formatDate(h.matchDateTime, 'D.M.YY'))
+        //     ))
+        //     .map(h => ({
+        //       x : formatDate(h.matchDateTime, 'D.M.YY'),
+        //       y : h.pointsAveragePlayedMatches
+        //     }))
+        // },
         {
           type: 'line',
+          // label: 'Ø Punkte alle',
           label: 'Ø Punkte',
           tension: 0.2,
           pointRadius : 0,
-          data: pointHistoryExtended().map(h => ({
-            x : formatDate(h.matchDateTime, 'D.M.YY'),
-            y : h.pointsAverage
-          }))
+          data: player.pointHistory
+            .filter(h => (
+              player.marketValueHistory.slice(-statDays).map(h2 => formatDate(h2.day, 'D.M.YY')).includes(formatDate(h.matchDateTime, 'D.M.YY'))
+            ))
+            .map(h => ({
+              x : formatDate(h.matchDateTime, 'D.M.YY'),
+              y : h.pointsAverageAllMatches
+            })).concat({
+              x : formatDate(player.marketValueHistory.slice(-1)[0].day),
+              y : player.pointHistory.slice(-1)[0].pointsAverageAllMatches
+            })
         }
       ]
     },

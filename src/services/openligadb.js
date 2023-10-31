@@ -15,6 +15,7 @@ const getMatchDays = async () => {
     // matches : response.data.reduce((a, b) => ((a.includes(b.matchDateTime) || md !== b.group.groupOrderID) ? a : a.concat(b.matchDateTime)), [])
     matches : response.data.filter(m => m.group.groupOrderID === md).map(m => ({
       matchDateTime : m.matchDateTime,
+      isFinished : m.matchIsFinished,
       team1 : m.team1.teamId,
       team2 : m.team2.teamId
     }))
