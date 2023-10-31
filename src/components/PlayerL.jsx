@@ -23,6 +23,7 @@ const PlayerL = ({ player }) => {
           label: 'Marktwert/100k',
           tension: 0.2,
           pointRadius : 0,
+          borderColor : '#4969be',
           data: player.marketValueHistory.slice(-statDays).map(h => ({
             x : formatDate(h.day, 'D.M.YY'),
             y : h.marketValue / 100000
@@ -31,6 +32,7 @@ const PlayerL = ({ player }) => {
         {
           type: 'bar',
           label: 'Punkte',
+          backgroundColor : '#8e43b9',
           data: player.pointHistory
             .filter(h => (
               player.marketValueHistory.slice(-statDays).map(h2 => formatDate(h2.day, 'D.M.YY')).includes(formatDate(h.matchDateTime, 'D.M.YY'))
@@ -38,6 +40,20 @@ const PlayerL = ({ player }) => {
             .map(h => ({
               x : formatDate(h.matchDateTime, 'D.M.YY'),
               y : h.points
+            }))
+        },
+        {
+          type: 'bar',
+          label: 'verpasste Spiele',
+          backgroundColor : '#afafaf',
+          data: player.pointHistory
+            .filter(h => (
+              player.marketValueHistory.slice(-statDays).map(h2 => formatDate(h2.day, 'D.M.YY')).includes(formatDate(h.matchDateTime, 'D.M.YY'))
+            ))
+            .filter(d => d.points === null)
+            .map(h => ({
+              x : formatDate(h.matchDateTime, 'D.M.YY'),
+              y : 5
             }))
         },
         // {
@@ -60,6 +76,7 @@ const PlayerL = ({ player }) => {
           label: 'Ø Punkte',
           tension: 0.2,
           pointRadius : 0,
+          borderColor : '#d48e31',
           data: player.pointHistory
             .filter(h => (
               player.marketValueHistory.slice(-statDays).map(h2 => formatDate(h2.day, 'D.M.YY')).includes(formatDate(h.matchDateTime, 'D.M.YY'))
@@ -76,10 +93,19 @@ const PlayerL = ({ player }) => {
     },
     options : {
       scales: {
+        // x: {
+        //   grid: {
+        //     tickColor: 'red',
+        //     // tickColor: context => context.tick.value == 0 ? '#fff' : '#000',
+        //     // tickLength: context => context.tick.value == 0 ? 5 : 1,
+        //     // tickWidth: context => context.tick.value == 0 ? 3 : 1
+        //   }
+        // },
         y: {
           grid: {
             // lineWidth: context => context.tick.value == 0 ? 2 : 1,
-            color : context => context.tick.value == 0 ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.1)'
+            color : context => context.tick.value == 0 ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.1)',
+            // display : true
           }
         }
       },
