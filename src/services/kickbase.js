@@ -146,7 +146,7 @@ const getUserPlayers = async (leagueId, user) => {
 
 const getUserPlayersExtended = async (leagueId, user) => {
   const players = await getUserPlayers(leagueId, user)
-  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id)))
+  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id, p.club)))
   const playerMarketValueHistory = await Promise.all(players.map(p => getPlayerMarketValueHistory(leagueId, p.id)))
   return players.map(p => ({
     ...p,
@@ -157,37 +157,47 @@ const getUserPlayersExtended = async (leagueId, user) => {
 
 
 
-const getPlayerPointHistory = async (player) => {
+const getPlayerPointHistory = async (playerId, clubId = 0) => {
   const config = {
     headers: { Authorization: token }
   }
   const responses = await Promise.all([
-    axios.get(`${baseUrl}/players/${player}/points`, config),
+    axios.get(`${baseUrl}/players/${playerId}/points`, config),
     openligadbService.getMatchDays()
   ])
-  return {
-    id : player,
-    pointHistory : responses[0].data.s.map(s => ({
-      matches : s.m.map(m => ({
-        season : {
-          id : s.i,
-          name : s.t
-        },
-        day : m.d,
-        matchDateTime : s.i === 23 ? '2022' : responses[1].find(md => md.day === m.d).matches.find(m =>
-          m => m.team1 === getMatchingId(m.t1i) ||  m.team1 === getMatchingId(m.t2i)
-        ).matchDateTime,
-        points : m.p,
-        // team1 : {
-        //   id : m.t1i,
-        //   result : m.t1s
-        // },
-        // team2 : {
-        //   id : m.t2i,
-        //   result : m.t2s
-        // }
+
+  const finishedMatches =
+    responses[1]
+      .map(d => ({
+        day : d.day,
+        match : d.matches.find(m => m.team1 === getMatchingId(clubId) ||  m.team2 === getMatchingId(clubId))
       }))
-    })).map(s => s.matches).flat(1)
+      .filter(d => d.match.isFinished)
+
+  const pointHistory = finishedMatches.map(d => ({
+    day : d.day,
+    matchDateTime : d.match.matchDateTime,
+    points : (
+      responses[0].data.s.at(-1) &&
+      responses[0].data.s.at(-1).m.find(m => m.d === d.day)
+    )
+      ? responses[0].data.s.at(-1).m.find(m => m.d === d.day).p
+      : null
+  }))
+
+  return {
+    id : playerId,
+    pointHistory : pointHistory.map((h, i) => ({
+      ...h,
+      pointsTotal : pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0),
+      pointsAverageAllMatches :
+        // () => this.pointsTotal / this.day,
+        (pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
+        h.day,
+      pointsAveragePlayedMatches : 
+        (pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
+        pointHistory.slice(0, i + 1).filter(d => d.points !== null).length
+    }))
   }
 }
 
@@ -237,7 +247,7 @@ const getMarket = async (leagueId, user) => {
 
 const getMarketExtended = async (leagueId, user) => {
   const players = await getMarket(leagueId, user)
-  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id)))
+  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id, p.club)))
   const playerMarketValueHistory = await Promise.all(players.map(p => getPlayerMarketValueHistory(leagueId, p.id)))
   return players.map(p => ({
     ...p,

@@ -1,10 +1,11 @@
-GET https://api.openligadb.de/getmatchdata/bl1f/2023
-
 ###
-GET https://api.openligadb.de/getavailableleagues
+GET https://api.openligadb.de/getmatchdata/bl1f/2023
 
 ### 
 GET https://api.openligadb.de/getmatchdata/bl1f/2023/5
+
+###
+GET https://api.openligadb.de/getavailableleagues
 
 ###
 GET https://api.openligadb.de/getcurrentgroup/bl1f
