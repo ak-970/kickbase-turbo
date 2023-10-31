@@ -51,8 +51,9 @@ const Squad = ({ user, league, users, clubs }) => {
         )}
       </div>
       <p>
-        Durschnittspunkte von allen aufgestellten Spielerinnen zusammen: <b>{
-          formatNumber(players.filter(p => p.linedUp).reduce((a, b) => (a + b.averagePoints), 0))
+        Durschnittspunkte (alle Spiele) von allen aufgestellten Spielerinnen zusammen: <b>{
+          // formatNumber(players.filter(p => p.linedUp).reduce((a, b) => (a + b.averagePoints), 0))
+          formatNumber(Math.floor(players.filter(p => p.linedUp).reduce((a, b) => (a + b.pointHistory.slice(-1)[0].pointsAveragePlayedMatches), 0)))
         }</b>
       </p>
       <div className='player-list squad'>
