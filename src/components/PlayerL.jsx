@@ -121,7 +121,7 @@ const PlayerL = ({ player }) => {
         <div className='info'>
           <div><b className='name'>{player.firstName} {player.lastName}</b> {player.linedUp && <Icon type='person-circle-check-green' />}</div>
           {/* <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.averagePoints)}</div> */}
-          <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.pointHistory.slice(-1)[0].pointsAveragePlayedMatches)}</div>
+          <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.pointHistory.slice(-1)[0].pointsAverageAllMatches)} ({formatNumber(player.averagePoints)})</div>
           <div>
             € {formatNumber(player.marketValue)}&nbsp;
             <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} />
