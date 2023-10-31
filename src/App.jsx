@@ -24,7 +24,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [league, setLeague] = useState(0)
   const [users, setUsers] = useState(null)
-  const [tab, setTab] = useState('budget')
+  const [tab, setTab] = useState('overview')
   const [notification, setNotification] = useState({ message : null, type : '' })
 
 

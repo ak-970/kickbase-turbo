@@ -248,18 +248,18 @@ const getMarketExtended = async (leagueId, user) => {
 
 
 
-const getFeed = async (leagueId) => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/feed`, config)
-  const types = [
-    { id : '2', name : 'meta.s.. hat meta.p.. an Kickbase verkauft' },
-    { id : '3', name : 'meta.p.. ist auf dem Transfermarkt' },
-    { id : '12', name : 'meta.b.. hat meta.p.. von Kickbase gekauft' }
-  ]
-  return response.data
-}
+// const getFeed = async (leagueId) => {
+//   const config = {
+//     headers: { Authorization: token }
+//   }
+//   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/feed`, config)
+//   const types = [
+//     { id : '2', name : 'meta.s.. hat meta.p.. an Kickbase verkauft' },
+//     { id : '3', name : 'meta.p.. ist auf dem Transfermarkt' },
+//     { id : '12', name : 'meta.b.. hat meta.p.. von Kickbase gekauft' }
+//   ]
+//   return response.data
+// }
 
 
 const getMyBudget = async (leagueId) => {
