@@ -40,52 +40,49 @@ const PlayerL = ({ player }) => {
 
 
 
-  const chartData = {
-    datasets: [
-      {
-        type: 'line',
-        label: 'Marktwert/100k',
-        tension: 0.2,
-        pointRadius : 0,
-        data: player.marketValueHistory.slice(-statDays).map(h => ({
-          x : formatDate(h.day, 'D.M.YY'),
-          y : h.marketValue / 100000
-        }))
+  const chart = {
+    data : {
+      datasets: [
+        {
+          type: 'line',
+          label: 'Marktwert/100k',
+          tension: 0.2,
+          pointRadius : 0,
+          data: player.marketValueHistory.slice(-statDays).map(h => ({
+            x : formatDate(h.day, 'D.M.YY'),
+            y : h.marketValue / 100000
+          }))
+        },
+        {
+          type: 'bar',
+          label: 'Punkte',
+          data: pointHistoryExtended().map(h => ({
+            x : formatDate(h.matchDateTime, 'D.M.YY'),
+            y : h.points
+          }))
+        },
+        {
+          type: 'line',
+          label: 'Ø Punkte',
+          tension: 0.2,
+          pointRadius : 0,
+          data: pointHistoryExtended().map(h => ({
+            x : formatDate(h.matchDateTime, 'D.M.YY'),
+            y : h.pointsAverage
+          }))
+        }
+      ]
+    },
+    options : {
+      scales: {
+        y: {
+          grid: {
+            // lineWidth: context => context.tick.value == 0 ? 2 : 1,
+            color : context => context.tick.value == 0 ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.1)'
+          }
+        }
       },
-      {
-        type: 'bar',
-        label: 'Punkte',
-        data: pointHistoryExtended().map(h => ({
-          x : formatDate(h.matchDateTime, 'D.M.YY'),
-          y : h.points
-        }))
-      },
-      {
-        type: 'line',
-        label: 'Ø Punkte',
-        tension: 0.3,
-        pointRadius : 0,
-        data: pointHistoryExtended().map(h => ({
-          x : formatDate(h.matchDateTime, 'D.M.YY'),
-          y : h.pointsAverage
-        }))
-      },
-      // {
-      //   type: 'line',
-      //   label: 'zero',
-      //   pointRadius : 0,
-      //   data: [
-      //     {
-      //       x : formatDate(player.marketValueHistory.slice(-statDays)[0].day, 'D.M.YY'),
-      //       y : 0
-      //     },
-      //     {
-      //       x : formatDate(player.marketValueHistory.slice(-1)[0].day, 'D.M.YY'),
-      //       y : 0
-      //     }
-      //   ]
-      // }
-    ]
+    }
   }
 
   return (
@@ -115,7 +112,7 @@ const PlayerL = ({ player }) => {
                 {formatNumber(o.price)}
               </b>&nbsp;
               {formatTime(new Date(o.dateExpiry) - new Date()) != ''
-                ? `(${formatTime(new Date(o.dateExpiry) - new Date())})}`
+                ? `(${formatTime(new Date(o.dateExpiry) - new Date())})`
                 : ''
               }
             </div>
@@ -123,7 +120,7 @@ const PlayerL = ({ player }) => {
         </div>
       </div>
       <div className='chart-container'>
-        <ChartCanvas data={chartData}/>
+        <ChartCanvas data={chart.data} options={chart.options}/>
       </div>
     </div>
   )
