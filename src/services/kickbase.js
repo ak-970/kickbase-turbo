@@ -194,9 +194,11 @@ const getPlayerPointHistory = async (playerId, clubId = 0) => {
         // () => this.pointsTotal / this.day,
         (pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
         h.day,
-      pointsAveragePlayedMatches : 
-        (pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
-        pointHistory.slice(0, i + 1).filter(d => d.points !== null).length
+      pointsAveragePlayedMatches : Math.floor(
+        ((pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
+        pointHistory.slice(0, i + 1).filter(d => d.points !== null).length)
+        || 0
+      )
     }))
   }
 }
