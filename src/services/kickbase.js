@@ -178,10 +178,10 @@ const getPlayerPointHistory = async (playerId, clubId = 0) => {
     day : d.day,
     matchDateTime : d.match.matchDateTime,
     points : (
-      responses[0].data.s.at(-1) &&
-      responses[0].data.s.at(-1).m.find(m => m.d === d.day)
+      responses[0].data.s.find(s => s.i === 24) &&
+      responses[0].data.s.find(s => s.i === 24).m.find(m => m.d === d.day)
     )
-      ? responses[0].data.s.at(-1).m.find(m => m.d === d.day).p
+      ? responses[0].data.s.find(s => s.i === 24).m.find(m => m.d === d.day).p
       : null
   }))
 
@@ -190,11 +190,12 @@ const getPlayerPointHistory = async (playerId, clubId = 0) => {
     pointHistory : pointHistory.map((h, i) => ({
       ...h,
       pointsTotal : pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0),
-      pointsAverageAllMatches :
-        // () => this.pointsTotal / this.day,
+      pointsAverageAllMatches : Math.round(
         (pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
-        h.day,
-      pointsAveragePlayedMatches : Math.floor(
+        h.day
+        || 0
+      ),
+      pointsAveragePlayedMatches : Math.round(
         ((pointHistory.slice(0, i + 1).reduce((a, b) => (a + (b.points || 0)), 0)) /
         pointHistory.slice(0, i + 1).filter(d => d.points !== null).length)
         || 0
