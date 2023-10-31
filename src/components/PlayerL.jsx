@@ -62,7 +62,7 @@ const PlayerL = ({ player }) => {
       },
       {
         type: 'line',
-        label: 'Punkte Ø',
+        label: 'Ø Punkte',
         tension: 0.3,
         pointRadius : 0,
         data: pointHistoryExtended().map(h => ({
@@ -70,21 +70,21 @@ const PlayerL = ({ player }) => {
           y : h.pointsAverage
         }))
       },
-      {
-        type: 'line',
-        label: 'zero',
-        pointRadius : 0,
-        data: [
-          {
-            x : formatDate(player.marketValueHistory.slice(-statDays)[0].day, 'D.M.YY'),
-            y : 0
-          },
-          {
-            x : formatDate(player.marketValueHistory.slice(-1)[0].day, 'D.M.YY'),
-            y : 0
-          }
-        ]
-      }
+      // {
+      //   type: 'line',
+      //   label: 'zero',
+      //   pointRadius : 0,
+      //   data: [
+      //     {
+      //       x : formatDate(player.marketValueHistory.slice(-statDays)[0].day, 'D.M.YY'),
+      //       y : 0
+      //     },
+      //     {
+      //       x : formatDate(player.marketValueHistory.slice(-1)[0].day, 'D.M.YY'),
+      //       y : 0
+      //     }
+      //   ]
+      // }
     ]
   }
 
@@ -114,7 +114,10 @@ const PlayerL = ({ player }) => {
               <b className={o.price > player.marketValue ? 'good' : 'bad'}>
                 {formatNumber(o.price)}
               </b>&nbsp;
-              ({formatTime(new Date(o.dateExpiry) - new Date())})
+              {formatTime(new Date(o.dateExpiry) - new Date()) != ''
+                ? `(${formatTime(new Date(o.dateExpiry) - new Date())})}`
+                : ''
+              }
             </div>
           )}
         </div>
