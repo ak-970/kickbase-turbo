@@ -131,3 +131,6 @@ dist
 
 
 kickbase.rest
+tests/
+utils/
+kickbase-turbo.code-workspace
