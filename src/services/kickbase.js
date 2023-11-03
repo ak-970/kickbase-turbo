@@ -18,6 +18,31 @@ const setToken = newToken => {
 //   return response.data
 // }
 
+const getLiveData = async (leagueId, user) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
+  return !response.data.u.find(u => u.id === user)
+    ? []
+    : response.data.u.find(u => u.id === user).pl.map(pl => ({
+      id : pl.id,
+      club : pl.tid,
+      firstName : pl.fn,
+      lastName : pl.n,
+      number : pl.nr,
+      position : pl.p,
+      points : pl.t
+      // image : pl.profileBig,
+      // linedUp : pl.dayStatus === 1,
+      // injured : pl.status === 1,
+      // totalPoints : pl.totalPoints,
+      // averagePoints : pl.averagePoints,
+      // marketValue : pl.marketValue,
+      // marketValueTrend : pl.marketValueTrend
+    }))
+}
+
 
 const getUsers = async (leagueId) => {
   if (leagueId === 0) return []
@@ -146,10 +171,35 @@ const getUserPlayers = async (leagueId, user) => {
 }
 
 
+const getUserPlayersLive = async (leagueId, user) => {
+  const responses = await Promise.all([
+    getUserPlayers(leagueId, user),
+    getLiveData(leagueId, user)
+  ])
+  // console.log('responses', responses)
+  // console.log('return', responses[0].map(pl => ({
+  //   ...pl,
+  //   plid : pl.id,
+  //   liveData : responses[1],
+  //   liveDataPlayer : responses[1].find(p => p.id === pl.id),
+  //   points : !responses[1].find(p => p.id === pl.id) ? 0 : responses[1].find(p => p.id === pl.id).points
+  // })))
+  return responses[0].map(pl => ({
+    ...pl,
+    user,
+    points : !responses[1].find(p => p.id === pl.id) ? 0 : responses[1].find(p => p.id === pl.id).points
+  }))
+}
+
+
 const getUserPlayersExtended = async (leagueId, user) => {
   const players = await getUserPlayers(leagueId, user)
-  const playerPointHistory = await Promise.all(players.map(p => getPlayerPointHistory(p.id, p.club)))
-  const playerMarketValueHistory = await Promise.all(players.map(p => getPlayerMarketValueHistory(leagueId, p.id)))
+  const playerPointHistory = await Promise.all(
+    players.map(p => getPlayerPointHistory(p.id, p.club))
+  )
+  const playerMarketValueHistory = await Promise.all(
+    players.map(p => getPlayerMarketValueHistory(leagueId, p.id))
+  )
   return players.map(p => ({
     ...p,
     pointHistory : playerPointHistory.find(h => h.id === p.id).pointHistory,
@@ -299,6 +349,7 @@ export default {
   // getLineup,
   // getLineupExtended,
   getUserPlayers,
+  getUserPlayersLive,
   getUserPlayersExtended,
   // getPlayerPointHistory,
   // getPlayerMarketValueHistory,

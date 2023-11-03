@@ -7,6 +7,7 @@ import openligadbService from '../services/openligadb'
 // components
 import PlayerS from './PlayerS'
 import Icon from './Icon'
+import Carousel from './Carousel'
 
 // utils
 import formatDate from '../utils/formatDate'
@@ -74,23 +75,43 @@ const Overview = ({ user, league, users, clubs }) => {
   }, [matchDay])
 
   useEffect(() => {
+    // if (user !== null && users) {
+    //   if(matchDay !== 0 && matchDay === currentMatchDay) {
+    //     console.log('currentMatchDay')
+
+    //     Promise.all(users.map(u => kickbaseService.getUserPlayersLive(league, u.id, matchDay)))
+    //       .then(userPlayers => {
+    //         console.log('userPlayers', userPlayers)
+    //         setPlayersForMatchDay(userPlayers)
+    //       })
+
+
+    //   } else {
+    //     console.log('not currentMatchDay')
+    //     Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(league, u.id, matchDay)))
+    //     .then((userPlayers) => setPlayersForMatchDay(userPlayers))
+    //   }
+    // }
+
     if (user !== null && users) {
       Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(league, u.id, matchDay)))
-        .then((players) => {
+        .then((usersPlayers) => {
           if(matchDay !== 0 && matchDay === currentMatchDay) {
-            Promise.all(users.map(u => kickbaseService.getUserPlayers(league, u.id, matchDay)))
-              .then(pl => {
-                const linedUpPlayers = pl.reduce((a, b) => [...a, ...b], []).filter(p => p.linedUp).map(p => p.id)
-                setPlayersForMatchDay(players.map(pl => ({
-                  ...pl,
-                  players : pl.players.map(p => ({
-                    ...p,
-                    linedUp : linedUpPlayers.includes(p.id)
+            Promise.all(users.map(u => kickbaseService.getUserPlayersLive(league, u.id, matchDay)))
+              .then(usersPlayersLive => {
+                const linedUpPlayers = usersPlayersLive.reduce((a, b) => [...a, ...b], []).filter(p => p.linedUp).map(p => p.id)
+                setPlayersForMatchDay(usersPlayers.map(userPlayers => ({
+                  ...userPlayers,
+                  players : userPlayers.players.map(player => ({
+                    ...player,
+                    linedUp : linedUpPlayers.includes(player.id),
+                    points : usersPlayersLive.flat(1).find(uPl => uPl.id === player.id).points
                   }))
                 })))
+                console.log('playersForMatchDay', playersForMatchDay)
               })
           } else {
-            setPlayersForMatchDay(players)
+            setPlayersForMatchDay(usersPlayers)
           }
         })
     }
@@ -113,41 +134,41 @@ const Overview = ({ user, league, users, clubs }) => {
 
       <div className="teams">
 
-        {users && users.map(u =>
-
-          <div key={u.id} className="team">
-            <div>
-              <h3>{u.name}</h3>
-              <p>
-                Gesamtpunkte: {u.points}<br/>
-                Spieltagspunkte: {
-                  playersForMatchDay.find(p => p.user === u.id)
-                    ? playersForMatchDay.find(p => p.user === u.id).points
-                    : 0
-                }
-              </p>
-            </div>
-
-            {currentMatchdayData && currentMatchdayData.map(match =>
-              <div key={match.id} className="match-info">
-                <MatchBanner
-                  match={match}
-                  clubs={clubs}
-                />
-                {playersForMatchDay.find(p => p.user === u.id)
-                && playersForMatchDay.find(p => p.user === u.id).players.filter(player => playsInThisMatch(player, match)).map(player =>
-                  <PlayerS
-                    key={player.id}
-                    player={player}
-                    clubIcon={clubs.find(c => c.id === player.club).icon}
-                  />
-                )}
+        {users && <Carousel>        
+          {users.map(u =>
+            <div key={u.id} className="team">
+              <div>
+                <h3>{u.name}</h3>
+                <p>
+                  Gesamtpunkte: {u.points}<br/>
+                  Spieltagspunkte: {
+                    playersForMatchDay.find(p => p.user === u.id)
+                      // ? playersForMatchDay.find(p => p.user === u.id).points()
+                      ? playersForMatchDay.find(p => p.user === u.id).players.reduce((a, b) => (a + b.points), 0)
+                      : 0
+                  }
+                </p>
               </div>
-            )}
 
-          </div>
-
-        )}
+              {currentMatchdayData && currentMatchdayData.map(match =>
+                <div key={match.id} className="match-info">
+                  <MatchBanner
+                    match={match}
+                    clubs={clubs}
+                  />
+                  {playersForMatchDay.find(p => p.user === u.id)
+                  && playersForMatchDay.find(p => p.user === u.id).players.filter(player => playsInThisMatch(player, match)).map(player =>
+                    <PlayerS
+                      key={player.id}
+                      player={player}
+                      clubIcon={clubs.find(c => c.id === player.club).icon}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </Carousel>} 
 
       </div>
     </section>
