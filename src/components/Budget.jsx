@@ -67,9 +67,6 @@ const Budget = ({ user, league, users, clubs }) => {
   const budgetWithTeamOnly = () =>
     userPlayers.reduce((a, b) => (b.linedUp ? a : a + b.offer), budget)
 
-  const marketValueTeam = () =>
-    userPlayers.reduce((a, b) => (!b.linedUp ? a : a + b.marketValue), 0)
-
   return (
     <section className='budget'>
       {/* <div className='buttons'>
@@ -85,10 +82,6 @@ const Budget = ({ user, league, users, clubs }) => {
         <p>
           {user.id !== userBudget ? 'Geschätztes ' : ''} Budget nach Verkauf von nicht aufgestellten Spielerinnen:&nbsp;
           <b className={budgetWithTeamOnly() < 0 ? 'bad' : 'good'}>€ {formatNumber(budgetWithTeamOnly())}</b>
-        </p>
-        <p>
-          {user.id !== userBudget ? 'Geschätztes ' : ''} Marktwert von allen aufgestellten Spielerinnen zusammen:&nbsp;
-          <b>€ {formatNumber(marketValueTeam())}</b>
         </p>
         {/* <div>
           <h3>Transfers</h3>
