@@ -27,7 +27,9 @@ const getMatchDayData = async (matchDay) => {
   return response.data.map(m => ({
     id : m.matchID,
     dateTime : m.matchDateTime,
+    started : new Date(m.matchDateTime) < new Date(),
     finished : m.matchIsFinished,
+    now : new Date(m.matchDateTime) < new Date() && !m.matchIsFinished,
     team1 : {
       id : m.team1.teamId,
       name : m.team1.teamName,

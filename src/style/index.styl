@@ -210,10 +210,22 @@ form
         opacity 0.5
 
       &.now .result
+        position relative
         font-weight bold
         
-        // &:after
-        //   content ' LIVE'
+        &:after
+          position absolute
+          top 0
+          left 65px
+          width 30px
+          height 15px
+          content 'LIVE'
+          font-weight normal
+          font-size 0.7em
+          line-height 1.4em
+          padding 2px 2px 1px 2px
+          color #fff
+          background $green
 
       .team-icon
         display block

@@ -18,31 +18,6 @@ const setToken = newToken => {
 //   return response.data
 // }
 
-const getLiveData = async (leagueId, user) => {
-  const config = {
-    headers: { Authorization: token }
-  }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
-  return !response.data.u.find(u => u.id === user)
-    ? []
-    : response.data.u.find(u => u.id === user).pl.map(pl => ({
-      id : pl.id,
-      club : pl.tid,
-      firstName : pl.fn,
-      lastName : pl.n,
-      number : pl.nr,
-      position : pl.p,
-      points : pl.t
-      // image : pl.profileBig,
-      // linedUp : pl.dayStatus === 1,
-      // injured : pl.status === 1,
-      // totalPoints : pl.totalPoints,
-      // averagePoints : pl.averagePoints,
-      // marketValue : pl.marketValue,
-      // marketValueTrend : pl.marketValueTrend
-    }))
-}
-
 
 const getUsers = async (leagueId) => {
   if (leagueId === 0) return []
@@ -87,6 +62,32 @@ const getLive = async (leagueId) => {
     }))
   }))
 }
+
+const getLiveData = async (leagueId, user) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
+  return !response.data.u.find(u => u.id === user)
+    ? []
+    : response.data.u.find(u => u.id === user).pl.map(pl => ({
+      id : pl.id,
+      club : pl.tid,
+      firstName : pl.fn,
+      lastName : pl.n,
+      number : pl.nr,
+      position : pl.p,
+      points : pl.t
+      // image : pl.profileBig,
+      // linedUp : pl.dayStatus === 1,
+      // injured : pl.status === 1,
+      // totalPoints : pl.totalPoints,
+      // averagePoints : pl.averagePoints,
+      // marketValue : pl.marketValue,
+      // marketValueTrend : pl.marketValueTrend
+    }))
+}
+
 
 const getPlayersForMatchDay = async (leagueId, user, matchDay) => {
   const config = {

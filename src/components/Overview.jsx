@@ -16,7 +16,7 @@ import formatTime from '../utils/formatTime'
 
 
 const MatchBanner = ({ match, clubs }) => {
-  const matchStatus = match.finished ? 'finished' : 'now-pending'
+  const matchStatus = match.finished ? 'finished' : (match.now ? 'now' : 'pending')
   const date = new Date(match.dateTime)
   const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
   return (
@@ -25,7 +25,7 @@ const MatchBanner = ({ match, clubs }) => {
         <img className="team-icon" src={clubs.find(c => c.openligaId === match.team1.id).icon} />
       </div>
       <div className="info">
-        <div className="time">{`${days[date.getDay()]} ${formatDate(date, 'D.M.YY')} ${formatTime(date, 'hh:mm')}`}</div>
+        <div className="time">{`${days[date.getDay()]} ${formatDate(date, 'D.M.YY hh:mm')}`}</div>
         <div className="result">{`${match.team1.result} : ${match.team2.result}`}</div>
       </div>
       <div className="team-2">
