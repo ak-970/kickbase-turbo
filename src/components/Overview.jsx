@@ -75,41 +75,25 @@ const Overview = ({ user, league, users, clubs }) => {
   }, [matchDay])
 
   useEffect(() => {
-    // if (user !== null && users) {
-    //   if(matchDay !== 0 && matchDay === currentMatchDay) {
-    //     console.log('currentMatchDay')
-
-    //     Promise.all(users.map(u => kickbaseService.getUserPlayersLive(league, u.id, matchDay)))
-    //       .then(userPlayers => {
-    //         console.log('userPlayers', userPlayers)
-    //         setPlayersForMatchDay(userPlayers)
-    //       })
-
-
-    //   } else {
-    //     console.log('not currentMatchDay')
-    //     Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(league, u.id, matchDay)))
-    //     .then((userPlayers) => setPlayersForMatchDay(userPlayers))
-    //   }
-    // }
-
     if (user !== null && users) {
       Promise.all(users.map(u => kickbaseService.getPlayersForMatchDay(league, u.id, matchDay)))
         .then((usersPlayers) => {
           if(matchDay !== 0 && matchDay === currentMatchDay) {
-            Promise.all(users.map(u => kickbaseService.getUserPlayersLive(league, u.id, matchDay)))
-              .then(usersPlayersLive => {
-                const linedUpPlayers = usersPlayersLive.reduce((a, b) => [...a, ...b], []).filter(p => p.linedUp).map(p => p.id)
-                setPlayersForMatchDay(usersPlayers.map(userPlayers => ({
-                  ...userPlayers,
-                  players : userPlayers.players.map(player => ({
-                    ...player,
-                    linedUp : linedUpPlayers.includes(player.id),
-                    points : usersPlayersLive.flat(1).find(uPl => uPl.id === player.id).points
-                  }))
-                })))
-                console.log('playersForMatchDay', playersForMatchDay)
-              })
+            // setInterval(function() {
+              Promise.all(users.map(u => kickbaseService.getUserPlayersLive(league, u.id, matchDay)))
+                .then(usersPlayersLive => {
+                  const linedUpPlayers = usersPlayersLive.reduce((a, b) => [...a, ...b], []).filter(p => p.linedUp).map(p => p.id)
+                  setPlayersForMatchDay(usersPlayers.map(userPlayers => ({
+                    ...userPlayers,
+                    players : userPlayers.players.map(player => ({
+                      ...player,
+                      linedUp : linedUpPlayers.includes(player.id),
+                      points : usersPlayersLive.flat(1).find(uPl => uPl.id === player.id).points
+                    }))
+                  })))
+                  // console.log('playersForMatchDay', playersForMatchDay)
+                })
+            // }, 5000)
           } else {
             setPlayersForMatchDay(usersPlayers)
           }

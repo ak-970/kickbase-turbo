@@ -175,11 +175,11 @@ form
 
 
 .overview .teams
-  display flex
-  flex-flow row wrap
-  justify-content start
-  align-items start
-  gap 30px
+  // display flex
+  // flex-flow row wrap
+  // justify-content start
+  // align-items start
+  // gap 30px
 
   .team
     width 250px
@@ -368,7 +368,7 @@ form
 .carousel
   position relative
   width 100%
-  // overflow hidden
+  overflow hidden
 
   // .left
   // .right
@@ -387,14 +387,18 @@ form
   // .right
   //   right 0
 
-  .content
-    // position relative
-    // width 10000px
-    // left @css{calc(50% - 5000px)}
-    display flex
-    flex-flow row nowrap
-    justify-content center
-    align-items start
-    gap 30px
-    margin-left -50px
+  .content-wrap
+    width 100%
+    overflow-x scroll
+
+    .content
+      // position relative
+      // width 10000px
+      // left @css{calc(50% - 5000px)}
+      width max-content
+      display flex
+      flex-flow row nowrap
+      justify-content center
+      align-items start
+      gap 30px
 
