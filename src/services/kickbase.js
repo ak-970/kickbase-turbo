@@ -83,6 +83,7 @@ const getPlayersForMatchDay = async (leagueId, user, matchDay) => {
       number : pl.number,
       points : (pl.dayPoints || 0),
       position : pl.position,
+      injured : pl.status === 1,
       image : pl.profileBig,
       linedUp : pl.dayStatus === 1
     }))
@@ -136,6 +137,7 @@ const getUserPlayers = async (leagueId, user) => {
     position : pl.position,
     image : pl.profileBig,
     linedUp : pl.dayStatus === 1,
+    injured : pl.status === 1,
     totalPoints : pl.totalPoints,
     averagePoints : pl.averagePoints,
     marketValue : pl.marketValue,
@@ -233,6 +235,7 @@ const getMarket = async (leagueId, user) => {
     position : pl.position,
     totalPoints : pl.totalPoints,
     averagePoints : pl.averagePoints,
+    injured : pl.status === 1,
     marketValue : pl.marketValue,
     marketValueTrend : pl.marketValueTrend,
     price : pl.price,

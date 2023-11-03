@@ -119,11 +119,15 @@ const PlayerL = ({ player }) => {
           <img src={player.image} />
         </div>}
         <div className='info'>
-          <div><b className='name'>{player.firstName} {player.lastName}</b> {player.linedUp && <Icon type='person-circle-check-green' />}</div>
+          <div>
+            <b className='name'>{player.firstName} {player.lastName}</b>
+            {player.injured && <Icon type='injured'/>}
+            {player.linedUp && <Icon type='person-circle-check-green'/>}
+          </div>
           {/* <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.averagePoints)}</div> */}
           <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.pointHistory.slice(-1)[0].pointsAverageAllMatches)} ({formatNumber(player.averagePoints)})</div>
           <div>
-            € {formatNumber(player.marketValue)}&nbsp;
+            € {formatNumber(player.marketValue)}
             <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} />
           </div>
         </div>
