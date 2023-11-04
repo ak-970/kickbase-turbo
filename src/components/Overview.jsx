@@ -12,8 +12,8 @@ import Carousel from './Carousel'
 // utils
 import formatDate from '../utils/formatDate'
 // import formatNumber from '../utils/formatNumber'
-import formatTime from '../utils/formatTime'
-import userEvent from '@testing-library/user-event'
+// import formatTime from '../utils/formatTime'
+// import userEvent from '@testing-library/user-event'
 
 // data
 import { clubs, getClubIcon } from '../data/clubs'

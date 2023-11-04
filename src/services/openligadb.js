@@ -1,6 +1,6 @@
 import axios from 'axios'
 // import formatDate from '../utils/formatDate'
-import { clubs, getMatchingId, getClubIcon } from '../data/clubs'
+import { getMatchingId } from '../data/clubs'
 
 // const getCurrentMatchDay = async () => {
 //   const response = await axios.get('https://api.openligadb.de/getcurrentgroup/bl1f')

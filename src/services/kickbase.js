@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { clubs, getMatchingId } from '../data/clubs'
+// import { clubs, getMatchingId } from '../data/clubs'
 import openligadbService from './openligadb'
 
 const baseUrl = 'https://api.kickbase.com'
@@ -289,16 +289,16 @@ const getPlayerPointHistory = async (playerId, clubId = 0) => {
   const config = {
     headers: { Authorization: token }
   }
-  const responses = await Promise.all([
+  const [points, matchDays] = await Promise.all([
     axios.get(`${baseUrl}/players/${playerId}/points`, config),
     openligadbService.getMatchDays()
   ])
 
   const finishedMatches =
-    responses[1]
+    matchDays
       .map(d => ({
         day : d.day,
-        match : d.matches.find(m => m.team1 === getMatchingId(clubId) ||  m.team2 === getMatchingId(clubId))
+        match : d.matches.find(m => m.team1 === clubId ||  m.team2 === clubId)
       }))
       .filter(d => d.match.isFinished)
 
@@ -306,10 +306,10 @@ const getPlayerPointHistory = async (playerId, clubId = 0) => {
     day : d.day,
     matchDateTime : d.match.matchDateTime,
     points : (
-      responses[0].data.s.find(s => s.i === 24) &&
-      responses[0].data.s.find(s => s.i === 24).m.find(m => m.d === d.day)
+      points.data.s.find(s => s.i === 24) &&
+      points.data.s.find(s => s.i === 24).m.find(m => m.d === d.day)
     )
-      ? responses[0].data.s.find(s => s.i === 24).m.find(m => m.d === d.day).p
+      ? points.data.s.find(s => s.i === 24).m.find(m => m.d === d.day).p
       : null
   }))
 
