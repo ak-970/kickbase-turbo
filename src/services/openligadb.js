@@ -22,7 +22,7 @@ const getMatchDays = async () => {
   }))
 }
 
-const getMatchDayData = async (matchDay) => {
+const getMatchDayMatches = async (matchDay) => {
   const response = await axios.get(`https://api.openligadb.de/getmatchdata/bl1f/2023/${matchDay}`)
   return response.data.map(m => ({
     id : m.matchID,
@@ -51,6 +51,6 @@ const getMatchDayData = async (matchDay) => {
 export default {
   // getCurrentMatchDay,
   getMatchDays,
-  getMatchDayData,
+  getMatchDayMatches,
   // getCurrentMatchDayData
 }

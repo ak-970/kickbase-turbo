@@ -42,6 +42,32 @@ const getCurrentMatchDay = async (leagueId) => {
   return response.data.md[0].n
 }
 
+const isMatchLive = async (leagueId) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
+
+  let isLive = false
+
+  response.data.md.forEach(matchDay => {
+    const now = new Date()
+    const start = new Date(matchDay.d)
+    const minutes = matchDay.m[0].ts || 0
+    if (
+      start < now &&    // has started
+      (
+        minutes < 90 || // has not reached minimum of minutes (necessary for half time break)
+        start.setTime(start.getTime() + (minutes + 2) * 60 * 1000) > now   // has not ended yet        
+      )
+    ) {
+      isLive = true
+    }
+  })
+
+  return isLive
+}
+
 
 const getLive = async (leagueId) => {
   const config = {
@@ -63,13 +89,63 @@ const getLive = async (leagueId) => {
   }))
 }
 
-const getLiveData = async (leagueId, user) => {
+const getLiveMatches = async (leagueId) => {
   const config = {
     headers: { Authorization: token }
   }
   const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
-  return !response.data.u.find(u => u.id === user)
-    ? []
+  let matches = []
+  response.data.md.forEach(matchDate => {
+    matchDate.m.forEach(match => {
+
+      const now = new Date()
+      const start = new Date(matchDate.d)
+      const minutes = match.ts || 0
+
+      matches.push({
+        id : match.id,
+        dateTime : matchDate.d,
+        now : start < now &&    // has started
+          (
+            minutes < 90 || // has not reached minimum of minutes (necessary for half time break)
+            start.setTime(start.getTime() + (minutes + 2) * 60 * 1000) > now   // has not ended yet        
+          ),
+        started : start < now,
+        team1 : {
+          id : match.t1i,
+          name : match.t1n,
+          result : match.t1s
+        },
+        team2 : {
+          id : match.t2i,
+          name : match.t2n,
+          result : match.t2s
+        }
+      })
+    })
+  })
+  return matches
+
+  // return response.data.md.map(match => ({
+  //   start : match.d,
+  //   id : match.m[0].id,
+  //   team1 : {
+  //     id : match.m[0].t1i,
+  //     result : match.m[0].t1s
+  //   },
+  //   team2 : {
+  //     id : match.m[0].t12,
+  //     result : match.m[0].t2s
+  //   }
+  // }))
+}
+
+const getLivePlayers = async (leagueId, user) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/live/`, config)
+  return !response.data.u.find(u => u.id === user) ? []
     : response.data.u.find(u => u.id === user).pl.map(pl => ({
       id : pl.id,
       club : pl.tid,
@@ -78,18 +154,11 @@ const getLiveData = async (leagueId, user) => {
       number : pl.nr,
       position : pl.p,
       points : pl.t
-      // image : pl.profileBig,
-      // linedUp : pl.dayStatus === 1,
-      // injured : pl.status === 1,
-      // totalPoints : pl.totalPoints,
-      // averagePoints : pl.averagePoints,
-      // marketValue : pl.marketValue,
-      // marketValueTrend : pl.marketValueTrend
     }))
 }
 
 
-const getPlayersForMatchDay = async (leagueId, user, matchDay) => {
+const getMatchDayPlayers = async (leagueId, user, matchDay) => {
   const config = {
     headers: { Authorization: token }
   }
@@ -173,22 +242,14 @@ const getUserPlayers = async (leagueId, user) => {
 
 
 const getUserPlayersLive = async (leagueId, user) => {
-  const responses = await Promise.all([
+  const [userPlayers, livePlayers] = await Promise.all([
     getUserPlayers(leagueId, user),
-    getLiveData(leagueId, user)
+    getLivePlayers(leagueId, user)
   ])
-  // console.log('responses', responses)
-  // console.log('return', responses[0].map(pl => ({
-  //   ...pl,
-  //   plid : pl.id,
-  //   liveData : responses[1],
-  //   liveDataPlayer : responses[1].find(p => p.id === pl.id),
-  //   points : !responses[1].find(p => p.id === pl.id) ? 0 : responses[1].find(p => p.id === pl.id).points
-  // })))
-  return responses[0].map(pl => ({
+  return userPlayers.map(pl => ({
     ...pl,
     user,
-    points : !responses[1].find(p => p.id === pl.id) ? 0 : responses[1].find(p => p.id === pl.id).points
+    points : !livePlayers.find(p => p.id === pl.id) ? 0 : livePlayers.find(p => p.id === pl.id).points
   }))
 }
 
@@ -345,8 +406,10 @@ export default {
   // getOverview,
   getUsers,
   getCurrentMatchDay,
+  isMatchLive,
   getLive,
-  getPlayersForMatchDay,
+  getLiveMatches,
+  getMatchDayPlayers,
   // getLineup,
   // getLineupExtended,
   getUserPlayers,
