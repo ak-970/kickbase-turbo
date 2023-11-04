@@ -20,6 +20,12 @@ $orange = #d48e31
     transform: rotate(360deg)
     left @css{calc(100% - 1em)}
 
+@keyframes blink
+  0% 
+    opacity 0.7
+  100%
+    opacity 1
+
 
 
 .icon
@@ -213,19 +219,19 @@ form
         position relative
         font-weight bold
         
-        &:after
+        .live
           position absolute
-          top 0
+          top 0.5px
           left 65px
-          width 30px
+          width 25px
           height 15px
-          content 'LIVE'
           font-weight normal
           font-size 0.7em
           line-height 1.4em
           padding 2px 2px 1px 2px
           color #fff
           background $green
+          animation blink 1s infinite
 
       .team-icon
         display block
