@@ -28,7 +28,10 @@ const MatchBanner = ({ match, clubs }) => {
       </div>
       <div className="info">
         <div className="time">{`${days[date.getDay()]} ${formatDate(date, 'D.M.YY hh:mm')}`}</div>
-        <div className="result">{`${match.team1.result} : ${match.team2.result}`}</div>
+        <div className="result">
+          {`${match.team1.result} : ${match.team2.result}`}
+          {match.now && <div className='live'>{`${match.minute}'`}</div>}
+        </div>
       </div>
       <div className="team-2">
         <img className="team-icon" src={clubs.find(c => c.openligaId === match.team2.id || c.id === match.team2.id).icon} />
@@ -85,8 +88,7 @@ const Overview = ({ user, league, users, clubs }) => {
 
 
       // initialize live update if match is live
-      if (matchDay === currentMatchDay && isMatchLive && typeof liveUpdateInterval === 'undefined') {
-        // console.log('get first live update and initialize interval for live update...')
+      if (matchDay === currentMatchDay && isMatchLive) {
         setLiveUpdate(liveUpdate + 1)
       }
 
@@ -98,11 +100,10 @@ const Overview = ({ user, league, users, clubs }) => {
   // live update
   useEffect(() => { const run = async () => {
     // console.log('requested live update...')
-    if (liveUpdate > 0) {
+    if (liveUpdate !== 0) {
       if (!isLive) {
-        // console.log('end interval for live update...')
-        clearInterval(liveUpdateInterval)
-        setLiveUpdate(0)
+        console.log('update one last time...')
+        setLiveUpdate(-1)
       } else {
         console.log('live update...')
 

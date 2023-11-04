@@ -100,17 +100,18 @@ const getLiveMatches = async (leagueId) => {
 
       const now = new Date()
       const start = new Date(matchDate.d)
-      const minutes = match.ts || 0
+      const minute = match.ts || 0
 
       matches.push({
         id : match.id,
         dateTime : matchDate.d,
         now : start < now &&    // has started
           (
-            minutes < 90 || // has not reached minimum of minutes (necessary for half time break)
-            start.setTime(start.getTime() + (minutes + 2) * 60 * 1000) > now   // has not ended yet        
+            minute < 90 || // has not reached minimum of minutes (necessary for half time break)
+            start.setTime(start.getTime() + (minute + 2) * 60 * 1000) > now   // has not ended yet        
           ),
         started : start < now,
+        minute,
         team1 : {
           id : match.t1i,
           name : match.t1n,
