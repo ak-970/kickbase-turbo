@@ -2,7 +2,7 @@
 GET https://api.openligadb.de/getmatchdata/bl1f/2023
 
 ### 
-GET https://api.openligadb.de/getmatchdata/bl1f/2023/5
+GET https://api.openligadb.de/getmatchdata/bl1f/2023/6
 
 ###
 GET https://api.openligadb.de/getavailableleagues

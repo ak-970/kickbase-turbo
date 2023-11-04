@@ -22,12 +22,14 @@ const getMatchDays = async () => {
   }))
 }
 
-const getMatchDayData = async (matchDay) => {
+const getMatchDayMatches = async (matchDay) => {
   const response = await axios.get(`https://api.openligadb.de/getmatchdata/bl1f/2023/${matchDay}`)
   return response.data.map(m => ({
     id : m.matchID,
     dateTime : m.matchDateTime,
+    started : new Date(m.matchDateTime) < new Date(),
     finished : m.matchIsFinished,
+    now : new Date(m.matchDateTime) < new Date() && !m.matchIsFinished,
     team1 : {
       id : m.team1.teamId,
       name : m.team1.teamName,
@@ -49,6 +51,6 @@ const getMatchDayData = async (matchDay) => {
 export default {
   // getCurrentMatchDay,
   getMatchDays,
-  getMatchDayData,
+  getMatchDayMatches,
   // getCurrentMatchDayData
 }

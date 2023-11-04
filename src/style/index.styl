@@ -206,14 +206,26 @@ form
       background $color2
       padding 5px 10px
 
-      &.pending
+      &.pending .result
         opacity 0.5
 
       &.now .result
+        position relative
         font-weight bold
         
-        // &:after
-        //   content ' LIVE'
+        &:after
+          position absolute
+          top 0
+          left 65px
+          width 30px
+          height 15px
+          content 'LIVE'
+          font-weight normal
+          font-size 0.7em
+          line-height 1.4em
+          padding 2px 2px 1px 2px
+          color #fff
+          background $green
 
       .team-icon
         display block
@@ -389,7 +401,9 @@ form
 
   .content-wrap
     width 100%
+    // padding 10px 0
     overflow-x scroll
+    box-shadow inset 10px 0 15px #fff, inset -10px 0 15px #fff
 
     .content
       // position relative
@@ -401,4 +415,12 @@ form
       justify-content center
       align-items start
       gap 30px
+
+      > .item
+        z-index -2
+
+        &:first-child
+          margin-left 20px
+        &:last-child
+          margin-right 20px
 
