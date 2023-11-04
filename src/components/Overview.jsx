@@ -88,7 +88,9 @@ const Overview = ({ user, league, users, clubs }) => {
                     players : userPlayers.players.map(player => ({
                       ...player,
                       linedUp : linedUpPlayers.includes(player.id),
-                      points : usersPlayersLive.flat(1).find(uPl => uPl.id === player.id).points
+                      points : usersPlayersLive.flat(1).find(uPl => uPl.id === player.id)
+                        ? usersPlayersLive.flat(1).find(uPl => uPl.id === player.id).points
+                        : 0
                     }))
                   })))
                   // console.log('playersForMatchDay', playersForMatchDay)
