@@ -1,5 +1,6 @@
 import axios from 'axios'
 // import formatDate from '../utils/formatDate'
+import { clubs, getMatchingId, getClubIcon } from '../data/clubs'
 
 // const getCurrentMatchDay = async () => {
 //   const response = await axios.get('https://api.openligadb.de/getcurrentgroup/bl1f')
@@ -16,8 +17,8 @@ const getMatchDays = async () => {
     matches : response.data.filter(m => m.group.groupOrderID === md).map(m => ({
       matchDateTime : m.matchDateTime,
       isFinished : m.matchIsFinished,
-      team1 : m.team1.teamId,
-      team2 : m.team2.teamId
+      team1 : getMatchingId(m.team1.teamId),
+      team2 : getMatchingId(m.team2.teamId)
     }))
   }))
 }
@@ -31,12 +32,12 @@ const getMatchDayMatches = async (matchDay) => {
     finished : m.matchIsFinished,
     now : new Date(m.matchDateTime) < new Date() && !m.matchIsFinished,
     team1 : {
-      id : m.team1.teamId,
+      id : getMatchingId(m.team1.teamId),
       name : m.team1.teamName,
       result : m.matchResults[1] ? m.matchResults[1].pointsTeam1 : 0
     },
     team2 : {
-      id : m.team2.teamId,
+      id : getMatchingId(m.team2.teamId),
       name : m.team2.teamName,
       result : m.matchResults[1] ? m.matchResults[1].pointsTeam2 : 0
     }

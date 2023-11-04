@@ -53,12 +53,25 @@ const isMatchLive = async (leagueId) => {
   response.data.md.forEach(matchDay => {
     const now = new Date()
     const start = new Date(matchDay.d)
-    const minutes = matchDay.m[0].ts || 0
+    const minute = matchDay.m[0].ts || 0
+
+    // if (start < now) {
+    //   console.log('----------------')
+    //   console.log('now', now)
+    //   console.log('start', start)
+    //   console.log('minute', minute)
+    //   console.log('start < now', start < now)
+    //   console.log('minute < 90', minute < 90)
+    //   console.log('start.getTime()', start.getTime())
+    //   console.log('start.setTime(start.getTime() + (minute + 20) * 60 * 1000)', start.setTime(start.getTime() + (minute + 20) * 60 * 1000))
+    //   console.log('start.setTime(start.getTime() + (minute + 20) * 60 * 1000) > now.getTime()', start.setTime(start.getTime() + (minute + 20) * 60 * 1000) > now.getTime() )
+    // }
+
     if (
       start < now &&    // has started
       (
-        minutes < 90 || // has not reached minimum of minutes (necessary for half time break)
-        start.setTime(start.getTime() + (minutes + 2) * 60 * 1000) > now   // has not ended yet        
+        minute < 90 || // has not reached minimum of minutes (necessary for half time break)
+        start.setTime(start.getTime() + (minute + 30) * 60 * 1000) > now.getTime()   // has not ended yet
       )
     ) {
       isLive = true
@@ -108,7 +121,7 @@ const getLiveMatches = async (leagueId) => {
         now : start < now &&    // has started
           (
             minute < 90 || // has not reached minimum of minutes (necessary for half time break)
-            start.setTime(start.getTime() + (minute + 2) * 60 * 1000) > now   // has not ended yet        
+            start.setTime(start.getTime() + ((minute + 30) * 60 * 1000)) > now.getTime()   // has not ended yet        
           ),
         started : start < now,
         minute,

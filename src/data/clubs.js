@@ -87,4 +87,14 @@ const getMatchingId = id => {
   }
 }
 
-export { clubs, getMatchingId }
+const getClubIcon = id => {
+  if (clubs.find(c => c.id === id)) {
+    return clubs.find(c => c.id === id).icon
+  } else if (clubs.find(c => c.openligaId === id)) {
+    return clubs.find(c => c.openligaId === id).icon
+  } else {
+    return ''
+  }
+}
+
+export { clubs, getMatchingId, getClubIcon }
