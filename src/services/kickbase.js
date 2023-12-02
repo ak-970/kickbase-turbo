@@ -20,17 +20,35 @@ const setToken = newToken => {
 
 
 const getUsers = async (leagueId) => {
-  if (leagueId === 0) return []
-  const config = {
-    headers: { Authorization: token }
+  if (leagueId === 0) return [] 
+
+  try {
+    const config = {
+      headers: { Authorization: token }
+    }
+    const response = await axios.get(`${baseUrl}/leagues/${leagueId}/users/`, config)
+  
+    console.log('response', response)
+  
+    if (response.status === 403) {
+      console.log('403')
+      return
+    } else {
+      return response.data.users.map(u => ({
+        id : u.id,
+        name : u.name,
+        image : u.profile,
+        points : u.pt || 0
+      }))
+    }
+  } catch(exception) {
+    console.log(exception)
+    console.log(exception.response.status)
+    if (exception.response.status) {
+      window.localStorage.clear()
+      return 'logout'
+    }
   }
-  const response = await axios.get(`${baseUrl}/leagues/${leagueId}/users/`, config)
-  return response.data.users.map(u => ({
-    id : u.id,
-    name : u.name,
-    image : u.profile,
-    points : u.pt || 0
-  }))
 }
 
 

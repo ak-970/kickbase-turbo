@@ -32,6 +32,9 @@ const App = () => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedKickbaseTurboUser')
     if (loggedUserJSON) {
+
+      console.log('loggedUserJSON', loggedUserJSON)
+
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       kickbaseService.setToken(user.token)
@@ -46,8 +49,12 @@ const App = () => {
     user !== null && kickbaseService
       .getUsers(league)
       .then(u => {
-        setUsers(u)
-        console.log('users', u)
+        if (u === 'logout') {
+          logout()
+        } else {
+          setUsers(u)
+          console.log('users', u)
+        }
       })
   }, [user, league])
 
@@ -140,7 +147,7 @@ const App = () => {
           <section>
             <p>
               Logged in as {user.name}&nbsp;
-              <button onClick={logout}>Logout</button>&nbsp;
+              <button onClick={kickbaseService.logout}>Logosut</button>&nbsp;
             </p>
             <div>
               <label htmlFor='leagueId'>Liga: </label>

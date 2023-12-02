@@ -131,7 +131,7 @@ const PlayerL = ({ player }) => {
           </div>
           <div>
             € {formatNumber(player.marketValue)}
-            <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} />
+            <Icon type={`arrow-trend-${player.marketValueTrend === 1 ? 'up' : 'down'}`} /> 
           </div>
         </div>
         <div className='offers'>
