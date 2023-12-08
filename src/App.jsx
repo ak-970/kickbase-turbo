@@ -147,7 +147,7 @@ const App = () => {
           <section>
             <p>
               Logged in as {user.name}&nbsp;
-              <button onClick={kickbaseService.logout}>Logosut</button>&nbsp;
+              <button onClick={kickbaseService.logout}>Logout</button>&nbsp;
             </p>
             <div>
               <label htmlFor='leagueId'>Liga: </label>
