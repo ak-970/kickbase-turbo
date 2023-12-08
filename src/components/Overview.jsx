@@ -101,6 +101,8 @@ const Overview = ({ user, league, users }) => {
       // initialize live update if match is live
       if (matchDay === currentMatchDay) {
         setLiveUpdate(liveUpdate + 1)
+      } else {
+        setLiveUpdate(0)
       }
 
     }

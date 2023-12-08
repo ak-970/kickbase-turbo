@@ -272,6 +272,12 @@ form
   // &.player-s
   //   flex-flow row nowrap
 
+  .player-number
+    width 1.4em
+    font-size 0.9em
+    text-align center
+  
+
   &.player-l
     .person
       display flex
@@ -408,8 +414,14 @@ form
   .content-wrap
     width 100%
     // padding 10px 0
-    overflow-x scroll
     box-shadow inset 10px 0 15px #fff, inset -10px 0 15px #fff
+
+    overflow-x scroll
+    -ms-overflow-style none
+    scrollbar-width none
+
+    &::-webkit-scrollbar
+      display none
 
     .content
       // position relative
