@@ -44,12 +44,13 @@ const Squad = ({ user, league, users, clubs }) => {
 
   return (
     <section className='squad'>
-      {/* <h2>Kader</h2> */}
+      
       <div className='buttons'>
         {users && users.map(u =>
           <button key={u.id} className={u.id === userSquad ? 'selected' : ''} onClick={() => setUserSquad(u.id)}>{u.name}</button>
         )}
       </div>
+
       <p>
         Durschnittspunkte von allen aufgestellten Spielerinnen zusammen:&nbsp;
         <b>
@@ -61,6 +62,11 @@ const Squad = ({ user, league, users, clubs }) => {
         Marktwert von allen aufgestellten Spielerinnen zusammen:&nbsp;
         <b>€ {formatNumber(players.reduce((a, b) => (!b.linedUp ? a : a + b.marketValue), 0))}</b>
       </p>
+      <p>
+        Marktwert von allen Spielerinnen zusammen:&nbsp;
+        <b>€ {formatNumber(players.reduce((a, b) => (a + b.marketValue), 0))}</b>
+      </p>
+
       <div className='player-list squad'>
         {!loadedData
           ? <Icon type='spinner' />

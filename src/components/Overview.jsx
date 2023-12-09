@@ -8,41 +8,10 @@ import openligadbService from '../services/openligadb'
 import PlayerS from './PlayerS'
 import Icon from './Icon'
 import Carousel from './Carousel'
-
-// utils
-import formatDate from '../utils/formatDate'
-// import formatNumber from '../utils/formatNumber'
-// import formatTime from '../utils/formatTime'
-// import userEvent from '@testing-library/user-event'
+import MatchBanner from './MatchBanner'
 
 // data
-import { clubs, getClubIcon } from '../data/clubs'
-
-
-const MatchBanner = ({ match }) => {
-  const matchStatus = match.started && !match.now ? 'finished' : (match.now ? 'now' : 'pending')
-  const date = new Date(match.dateTime)
-  const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
-
-  return (
-    <div className={`match-banner ${matchStatus}`}>
-      <div className="team-1">
-        <img className="team-icon" src={getClubIcon(match.team1.id)} />
-        
-      </div>
-      <div className="info">
-        <div className="time">{`${days[date.getDay()]} ${formatDate(date, 'D.M.YY hh:mm')}`}</div>
-        <div className="result">
-          {`${match.team1.result} : ${match.team2.result}`}
-          {match.now && <div className='live'>{`${match.minute}'`}</div>}
-        </div>
-      </div>
-      <div className="team-2">
-        <img className="team-icon" src={getClubIcon(match.team2.id)} />
-      </div>
-    </div>
-  )
-}
+import { clubs } from '../data/clubs'
 
 
 const Overview = ({ user, league, users }) => {
@@ -50,14 +19,14 @@ const Overview = ({ user, league, users }) => {
   // use states
   const [matchDay, setMatchDay] = useState(0)
   const [currentMatchDay, setCurrentMatchDay] = useState(0)
-  // const [isLive, setIsLive] = useState(false)
   const [liveUpdate, setLiveUpdate] = useState(0)
   const [matchdayMatches, setMatchdayMatches] = useState([])
   const [matchDayPlayers, setMatchDayPlayers] = useState([])
+  const [alignMatches, setAlignMatches] = useState(true)
 
 
   // use refs
-  const matchDayRef = useRef('')
+  const matchDayRef = useRef(0)
 
 
   // use effects
@@ -104,7 +73,7 @@ const Overview = ({ user, league, users }) => {
   // live update
 
     if (liveUpdate !== 0) {
-      console.log('live update...')
+      // console.log('live update...')
 
       // get live match and player data
       const [matchDayMatchesLive, ...usersPlayersLive] = await Promise.all(
@@ -112,8 +81,8 @@ const Overview = ({ user, league, users }) => {
           users.map(u => kickbaseService.getUserPlayersLive(league, u.id, matchDay))
         )
       )
-      console.log('matchDayMatchesLive', matchDayMatchesLive)
-      console.log('usersPlayersLive', usersPlayersLive)
+      // console.log('matchDayMatchesLive', matchDayMatchesLive)
+      // console.log('usersPlayersLive', usersPlayersLive)
 
       setMatchdayMatches(matchDayMatchesLive)
 
@@ -152,10 +121,23 @@ const Overview = ({ user, league, users }) => {
 
   const playsInThisMatch = (player, match) =>
     [match.team1.id, match.team2.id].includes(player.club)
-    
+
+  const userPlayersInThisMatch = (user, match) => {
+    const players = matchDayPlayers.find(p => p.user === user)
+    return !players ? [] : players.players.filter(player => playsInThisMatch(player, match))
+  }
+
+  const maxPlayersInThisMatch = (match) => {
+    const amounts = matchDayPlayers.map(user => userPlayersInThisMatch(user.user, match).length)
+    return Math.max(...amounts)
+  }
+   
 
 
-  // console.log('matchDayPlayers', matchDayPlayers)
+
+
+
+  console.log('matchDayPlayers', matchDayPlayers)
 
   return (
     <section className='overview'>
@@ -163,6 +145,8 @@ const Overview = ({ user, league, users }) => {
       <div>
         <label htmlFor='matchDay'>Spieltag: </label>
         <input id='matchDay' type='number' min={1} max={22} value={matchDay} onChange={() => setMatchDay(parseInt(event.target.value))}/>
+
+        <button className='align-matches' onClick={() => setAlignMatches(!alignMatches)}><Icon type={alignMatches ? 'not-aligned' : 'aligned'}/></button>
       </div>
 
       {!allDataLoaded() ? <Icon type='spinner' /> : <div className="teams">
@@ -189,20 +173,24 @@ const Overview = ({ user, league, users }) => {
                     match={match}
                     clubs={clubs}
                   />
-                  {matchDayPlayers.find(p => p.user === u.id) &&
-                  matchDayPlayers.find(p => p.user === u.id).players
-                    .filter(player => playsInThisMatch(player, match)).map(player =>
-                      <PlayerS
-                        key={player.id}
-                        player={player}
-                        clubIcon={clubs.find(c => c.id === player.club).icon}
-                      />
+                  {userPlayersInThisMatch(u.id, match).map(player =>
+                    <PlayerS
+                      key={player.id}
+                      player={player}
+                      clubIcon={clubs.find(c => c.id === player.club).icon}
+                    />
+                  )}
+                  {alignMatches && [...Array(maxPlayersInThisMatch(match) - userPlayersInThisMatch(u.id, match).length).keys()].map(k =>
+                    <PlayerS
+                      key={k}
+                      placeholder={true}
+                    />
                   )}
                 </div>
               )}
             </div>
           )}
-        </Carousel>} 
+        </Carousel>}
 
       </div>}
 
