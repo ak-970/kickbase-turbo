@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 // services
 import kickbaseService from '../services/kickbase'
@@ -56,39 +56,37 @@ const Overview = ({ user, league, users }) => {
   const [matchDayPlayers, setMatchDayPlayers] = useState([])
 
 
+  // use refs
+  const matchDayRef = useRef('')
 
-  // initialize match day
+
+  // use effects
+
+  useEffect(() => {
+  // always get current value for matchDay with matchDayRef.current
+    matchDayRef.current = matchDay;
+  }, [matchDay]);
+
+
   useEffect(() => { const run = async () => {
-    // console.log('initialize match day...')
+  // initialize match day
     const day = await kickbaseService.getCurrentMatchDay(league)
     setCurrentMatchDay(day)
     setMatchDay(day)
   }; run(); }, [])
 
 
-
-  // get match and player data for selected matchday
   useEffect(() => { const run = async () => {
+  // get match and player data for selected matchday
     setMatchdayMatches([])
     if (user !== null && users && matchDay !== 0) {
-
-      // match data
-      // const [matches, isMatchLive] = await Promise.all([
-      //   matchDay === currentMatchDay ? kickbaseService.getLiveMatches(league) : openligadbService.getMatchDayMatches(matchDay),
-      //   kickbaseService.isMatchLive(league)
-      // ])
       let matches = []
       if (matchDay === currentMatchDay) {
         matches = await kickbaseService.getLiveMatches(league)
       } else {
         matches = await openligadbService.getMatchDayMatches(matchDay)
       }
-      // const matches = await matchDay === currentMatchDay ? kickbaseService.getLiveMatches(league) : openligadbService.getMatchDayMatches(matchDay)
-      // console.log('matches', matches)
-      setMatchdayMatches(matches)
-      // console.log('isMatchLive', isMatchLive)
-      // setIsLive(isMatchLive)
-      
+      setMatchdayMatches(matches)      
 
       // player data
       const usersPlayers = await Promise.all(
@@ -97,22 +95,14 @@ const Overview = ({ user, league, users }) => {
       setMatchDayPlayers(usersPlayers)
       console.log('usersPlayers', usersPlayers)
 
-
-      // initialize live update if match is live
-      if (matchDay === currentMatchDay) {
-        setLiveUpdate(liveUpdate + 1)
-      } else {
-        setLiveUpdate(0)
-      }
-
+      initOrEndLiveUpdate()
     }
   }; run(); }, [user, users, matchDay, league])
 
 
-
-  // live update
   useEffect(() => { const run = async () => {
-    // console.log('requested live update...')
+  // live update
+
     if (liveUpdate !== 0) {
       console.log('live update...')
 
@@ -139,19 +129,24 @@ const Overview = ({ user, league, users }) => {
         }))
       })))
 
-      if (matchDayMatchesLive.find (m => m.now)) {
-        setTimeout(() => {
-          setLiveUpdate(liveUpdate + 1)
-        }, 3000)
+      if (matchDayMatchesLive.find(m => m.now)) {
+        setTimeout(initOrEndLiveUpdate, 3000)
       } else {
         setLiveUpdate(0)
-        // setIsLive(false)
       }
     }
   }; run(); }, [liveUpdate])
+
+
   
-
-
+  const initOrEndLiveUpdate  = () => {
+  // initialize live update if match is live
+    if (matchDayRef.current === currentMatchDay) {
+      setLiveUpdate(liveUpdate + 1)
+    } else {
+      setLiveUpdate(0)
+    }
+  }
 
   const allDataLoaded = () => matchdayMatches.length > 0 && matchDayPlayers.length > 0
 
