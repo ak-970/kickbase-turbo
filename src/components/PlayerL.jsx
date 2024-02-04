@@ -12,8 +12,13 @@ import Icon from './Icon'
 
 const PlayerL = ({ player }) => {
 
+  const getFullDaysBetween = (start = new Date(), end = new Date()) => Math.floor((end - start) / 1000 / 60 / 60 / 24)
+
+  const startDate = new Date("8/1/23")
+  const now = new Date()
+
   // use states
-  const [statDays, setStatDays] = useState(80)
+  const [statDays, setStatDays] = useState(getFullDaysBetween(startDate, now))
 
   const chart = {
     data : {
