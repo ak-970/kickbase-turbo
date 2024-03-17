@@ -159,7 +159,7 @@ const Overview = ({ user, league, users }) => {
                   Spieltagspunkte: {
                     matchDayPlayers.find(p => p.user === u.id)
                       // ? playersForMatchDay.find(p => p.user === u.id).points()
-                      ? matchDayPlayers.find(p => p.user === u.id).players.reduce((a, b) => (a + b.points), 0)
+                      ? matchDayPlayers.find(p => p.user === u.id).players.reduce((a, b) => (a + (!b.linedUp ? 0 : b.points)), 0)
                       : 0
                   }
                 </p>
