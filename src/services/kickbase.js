@@ -318,7 +318,7 @@ const getPlayerPointHistory = async (playerId, clubId = 0) => {
         day : d.day,
         match : d.matches.find(m => m.team1 === clubId ||  m.team2 === clubId)
       }))
-      .filter(d => d.match.isFinished)
+      .filter(d => d.match && d.match.isFinished)
 
   const pointHistory = finishedMatches.map(d => ({
     day : d.day,

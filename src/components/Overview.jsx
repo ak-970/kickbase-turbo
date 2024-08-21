@@ -46,7 +46,7 @@ const Overview = ({ user, league, users }) => {
 
 
   useEffect(() => { const run = async () => {
-  // get match and player data for selected matchday
+  // get match and player data for selected matchday    
     setMatchdayMatches([])
     if (user !== null && users && matchDay !== 0) {
       let matches = []
@@ -130,9 +130,6 @@ const Overview = ({ user, league, users }) => {
     return Math.max(...amounts)
   }
    
-
-
-
 
 
   console.log('matchDayPlayers', matchDayPlayers)

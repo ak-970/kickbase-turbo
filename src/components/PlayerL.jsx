@@ -91,7 +91,7 @@ const PlayerL = ({ player }) => {
               y : h.pointsAverageAllMatches
             })).concat({
               x : formatDate(player.marketValueHistory.slice(-1)[0].day),
-              y : player.pointHistory.slice(-1)[0].pointsAverageAllMatches
+              y : player.pointHistory.length == 0 ? 0 : player.pointHistory.slice(-1)[0].pointsAverageAllMatches
             })
         }
       ]
@@ -132,7 +132,7 @@ const PlayerL = ({ player }) => {
           {/* <div>P {formatNumber(player.totalPoints)}, Ø {formatNumber(player.averagePoints)}</div> */}
           <div>
             P {formatNumber(player.totalPoints)},&nbsp;
-            Ø {formatNumber(player.pointHistory.slice(-1)[0].pointsAverageAllMatches)} ({formatNumber(player.averagePoints)})&nbsp;
+            Ø {formatNumber(player.pointHistory.length == 0 ? 0 : player.pointHistory.slice(-1)[0].pointsAverageAllMatches)} ({formatNumber(player.averagePoints)})&nbsp;
           </div>
           <div>
             € {formatNumber(player.marketValue)}

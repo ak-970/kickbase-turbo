@@ -12,7 +12,7 @@ let clubs = [
   {
     id : '80',
     openligaId : 6067,
-    name : 'Werder Bremen',
+    name : 'SV Werder bremen',
     icon : 'club-logos/bremen.png'
   },
   {
@@ -20,6 +20,12 @@ let clubs = [
     openligaId : 6063,
     name : 'FC Bayern München',
     icon : 'club-logos/bayern.png'
+  },
+  {
+    id : '81',
+    openligaId : 0,
+    name : '1. FFC Turbine Potsdam',
+    icon : 'club-logos/potsdam.png'
   },
   {
     id : '83',
@@ -74,6 +80,12 @@ let clubs = [
     openligaId : 6069,
     name : 'RB Leipzig',
     icon : 'club-logos/leipzig.png'
+  },
+  {
+    id : '119',
+    openligaId : 0,
+    name : 'FC Carl Zeiss Jena',
+    icon : 'club-logos/jena.svg'
   }
 ]
 
